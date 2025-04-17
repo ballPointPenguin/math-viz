@@ -83,9 +83,13 @@ export default function Sidebar({ isVisible, onToggleVisibility }) {
 
   return (
     <aside className={sidebarClasses}>
-      <div className="sidebar-header" style={{ marginBottom: "1.5rem", padding: "1.5rem 1rem 0" }}>
+      <div className="sidebar-header" style={{ 
+        marginBottom: "1.5rem", 
+        padding: "1.5rem 1rem 0",
+        background: isMobileView ? "var(--colors-backgroundAlt)" : "transparent"
+      }}>
         <h1 style={{ 
-          fontSize: "1.5rem", 
+          fontSize: isMobileView ? "1.75rem" : "1.5rem", 
           margin: "0", 
           fontFamily: "var(--fonts-heading)",
           background: "linear-gradient(90deg, var(--colors-accent1), var(--colors-accent2))",
@@ -99,18 +103,23 @@ export default function Sidebar({ isVisible, onToggleVisibility }) {
           height: "2px", 
           background: "linear-gradient(90deg, var(--colors-accent1), var(--colors-accent2))",
           margin: "8px auto 0",
-          width: "80px"
+          width: isMobileView ? "120px" : "80px"
         }} />
       </div>
       
-      <div style={{ padding: "0 1rem", overflowY: "auto", flex: 1 }}>
+      <div style={{ 
+        padding: "0 1rem", 
+        overflowY: "auto", 
+        flex: 1,
+        background: isMobileView ? "var(--colors-backgroundAlt)" : "transparent"
+      }}>
         <NavigationMenu.Root orientation="vertical" className="SidebarNavRoot">
-          <NavigationMenu.List className="SidebarNavList">
+          <NavigationMenu.List className={`SidebarNavList ${isMobileView ? 'mobile' : ''}`}>
             {/* Render navigation sections from data */}
             {navigationData.map(section => (
               <NavigationMenu.Item key={section.id}>
                 <NavigationMenu.Trigger 
-                  className="SidebarNavTrigger" 
+                  className={`SidebarNavTrigger ${isMobileView ? 'mobile' : ''}`}
                   onClick={() => toggleMenu(section.id)}
                   data-state={openMenus[section.id] ? 'open' : 'closed'}
                 >
@@ -121,7 +130,7 @@ export default function Sidebar({ isVisible, onToggleVisibility }) {
                   }} />
                 </NavigationMenu.Trigger>
                 <NavigationMenu.Content 
-                  className="SidebarNavContent" 
+                  className={`SidebarNavContent ${isMobileView ? 'mobile' : ''}`}
                   data-state={openMenus[section.id] ? 'open' : 'closed'}
                 >
                   <nav
@@ -132,7 +141,9 @@ export default function Sidebar({ isVisible, onToggleVisibility }) {
                         <NavLink
                           to={link.to}
                           className={({ isActive }) =>
-                            isActive ? "navLink activeNavLink" : "navLink"
+                            isActive 
+                              ? `navLink activeNavLink ${isMobileView ? 'mobile' : ''}` 
+                              : `navLink ${isMobileView ? 'mobile' : ''}`
                           }
                         >
                           {link.label}
@@ -150,7 +161,9 @@ export default function Sidebar({ isVisible, onToggleVisibility }) {
                 <NavLink
                   to="/"
                   className={({ isActive }) =>
-                    isActive ? "navLink activeNavLink" : "navLink"
+                    isActive 
+                      ? `navLink activeNavLink ${isMobileView ? 'mobile' : ''}` 
+                      : `navLink ${isMobileView ? 'mobile' : ''}`
                   }
                 >
                   Home
@@ -170,7 +183,8 @@ export default function Sidebar({ isVisible, onToggleVisibility }) {
         color: "var(--colors-textMuted)",
         display: "flex",
         alignItems: "center",
-        gap: "8px" 
+        gap: "8px",
+        background: isMobileView ? "var(--colors-backgroundAlt)" : "transparent" 
       }}>
         <InfoCircledIcon />
         <span>Math Viz v0.1</span>
