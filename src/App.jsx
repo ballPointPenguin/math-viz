@@ -15,6 +15,7 @@ import { TangentExplorer } from "./components/TangentExplorer.jsx";
 import { UnitCircle } from "./components/UnitCircle.jsx";
 import { VectorAddition } from "./components/VectorAddition.jsx";
 import { VectorOperations } from "./components/VectorOperations.jsx";
+import MathVizDemo from "./components/MathVizDemo";
 
 function Home() {
 	return (
@@ -67,11 +68,10 @@ function Home() {
 				/>
 				
 				<FeatureCard 
-					title="Learn More" 
-					description="Discover how visualization can enhance mathematical understanding."
-					icon={<ExternalLinkIcon />} 
-					linkPath="/" 
-					isExternal
+					title="Component Library" 
+					description="Explore our collection of visualization components for math education."
+					icon={<PlusCircledIcon />} 
+					linkPath="/math-viz-demo" 
 				/>
 			</div>
 			
@@ -217,6 +217,8 @@ function App() {
 					{/* Demos & Utilities */}
 					<Route path="p5-demo" element={<P5Demo />} />
 					<Route path="mafs-hello" element={<MafsHello />} />
+					{/* Component Library Demo */}
+					<Route path="math-viz-demo" element={<MathVizDemo />} />
 				</Routes>
 			</Layout>
 		</BrowserRouter>
