@@ -1,6 +1,6 @@
 # Some Tools We're Using
 
-## Visualization Tools
+## Math & Visualization Tools
 
 - [Mafs](https://mafs.dev/guides/get-started/installation)
 - [p5.js](https://p5js.org/reference/)
