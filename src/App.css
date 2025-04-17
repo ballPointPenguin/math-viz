@@ -1,0 +1,284 @@
+/* App.css: Vaporwave + Dark Academic styling with vanilla-extract theme vars */
+
+.mainBg {
+  background-color: var(--colors-background);
+  color: var(--colors-text);
+  min-height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  position: relative;
+  z-index: 2;
+  background-image: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.95)),
+    url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(163, 119, 255, 0.1)' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+/* Add this debug class to help identify rendering issues */
+.debug-outline * {
+  outline: 1px solid rgba(255, 0, 0, 0.5);
+}
+
+/* Main content container */
+.content-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+/* Sidebar toggle button */
+.sidebar-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 40px;
+  height: 40px;
+  background: var(--colors-surface);
+  border: 1px solid var(--colors-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+  background: var(--colors-surfaceHover);
+  box-shadow: var(--shadows-glow);
+}
+
+/* Sidebar styling */
+.sidebar {
+  background: var(--colors-backgroundAlt);
+  border-right: 1px solid var(--colors-border);
+  color: var(--colors-text);
+  height: 100vh;
+  width: 280px;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  gap: 1.5rem;
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow-y: auto;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
+}
+
+/* Add a subtle grid pattern to the sidebar */
+.sidebar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.03) 1px, 
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg, 
+      rgba(255, 255, 255, 0.03) 1px, 
+      transparent 1px
+    );
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Navigation menu styling */
+.SidebarNavRoot {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.SidebarNavList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.SidebarNavTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--colors-textMuted);
+  font-family: var(--fonts-heading);
+  font-size: 16px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.SidebarNavTrigger:hover {
+  background: var(--colors-surfaceHover);
+  color: var(--colors-text);
+}
+
+.SidebarNavTrigger[data-state='open'] {
+  background: var(--colors-surfaceActive);
+  color: var(--colors-primary);
+  text-shadow: 0 0 8px rgba(174, 129, 255, 0.5);
+}
+
+.SidebarNavContent {
+  overflow: hidden;
+  padding: 0;
+  height: 0;
+  opacity: 0;
+  transition: height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+}
+
+.SidebarNavContent[data-state='open'] {
+  padding: 5px 10px 5px 25px;
+  height: auto;
+  opacity: 1;
+}
+
+.navLink {
+  color: var(--colors-textMuted);
+  text-decoration: none;
+  font-weight: 300;
+  padding: 8px 15px;
+  border-radius: 4px;
+  display: block;
+  transition: all 0.2s ease;
+  position: relative;
+  font-family: var(--fonts-body);
+}
+
+.navLink:hover {
+  background: var(--colors-surfaceHover);
+  color: var(--colors-accent2);
+  transform: translateX(3px);
+}
+
+.activeNavLink {
+  background: var(--colors-surfaceActive);
+  color: var(--colors-accent1) !important;
+  border-left: 2px solid var(--colors-accent1);
+  box-shadow: var(--shadows-glow);
+}
+
+/* Main content area */
+main {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 2.5rem 3rem;
+  transition: margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: var(--colors-background);
+  color: var(--colors-text);
+}
+
+/* Adjust main content when sidebar is hidden */
+.sidebar.hidden + main {
+  margin-left: 0;
+}
+
+/* Headings with decorative underline */
+main h1, main h2 {
+  position: relative;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--fonts-heading);
+}
+
+main h1::after, main h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--colors-accent1),
+    var(--colors-accent2)
+  );
+  border-radius: 3px;
+}
+
+/* Feature card hover effects */
+a:hover .card-hover-effect {
+  opacity: 1;
+}
+
+a:hover div[style*="background: var(--colors-surface)"] {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-color: var(--colors-border);
+  background: var(--colors-surfaceHover) !important;
+}
+
+/* Add a subtle glow effect to icons on hover */
+a:hover div[style*="color: var(--colors-accent2)"] {
+  transform: scale(1.1);
+  color: var(--colors-accent1) !important;
+  filter: drop-shadow(0 0 8px rgba(163, 119, 255, 0.5));
+}
+
+/* Decorative elements animation */
+.home-decorative-element {
+  animation: float 8s ease-in-out infinite;
+}
+
+.home-decorative-element:nth-child(odd) {
+  animation-delay: 2s;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(10px) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+/* Ensure root container styling */
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--colors-background);
+  color: var(--colors-text);
+}
