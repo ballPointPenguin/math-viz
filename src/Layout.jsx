@@ -1,11 +1,28 @@
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import { theme, debugOutline } from "./theme.css.ts";
 import "./App.css";
 
 export default function Layout({ children }) {
-	const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+	const [isSidebarVisible, setIsSidebarVisible] = useState(window.innerWidth > 768);
+	const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
+
+	// Add a listener for screen size changes
+	useEffect(() => {
+		const handleResize = () => {
+			const mobile = window.innerWidth <= 768;
+			setIsMobileView(mobile);
+			
+			// On desktop, sidebar is always visible by default
+			if (!mobile && !isSidebarVisible) {
+				setIsSidebarVisible(true);
+			}
+		};
+
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, [isSidebarVisible]);
 
 	const toggleSidebar = () => {
 		setIsSidebarVisible(!isSidebarVisible);
@@ -13,7 +30,7 @@ export default function Layout({ children }) {
 
 	return (
 		<div
-			className={`${theme} mainBg debug-outline`}
+			className={`${theme} mainBg`}
 			style={{ backgroundColor: 'var(--colors-background)' }}
 		>
 			{/* Decorative elements */}
@@ -49,12 +66,12 @@ export default function Layout({ children }) {
 			
 			{/* Content container for proper layout */}
 			<div className="content-container">
-				{/* Sidebar toggle button for mobile/collapsed view */}
+				{/* Sidebar toggle button */}
 				<div 
 					className="sidebar-toggle" 
 					onClick={toggleSidebar}
 					style={{ 
-						left: isSidebarVisible ? "300px" : "20px",
+						left: isMobileView ? "20px" : (isSidebarVisible ? "300px" : "20px"),
 					}}
 				>
 					<HamburgerMenuIcon />
@@ -62,7 +79,7 @@ export default function Layout({ children }) {
 				
 				{/* Overlay for mobile - only visible when sidebar is open */}
 				<div 
-					className={`sidebar-overlay ${isSidebarVisible ? 'visible' : ''}`} 
+					className={`sidebar-overlay ${isSidebarVisible && isMobileView ? 'visible' : ''}`} 
 					onClick={toggleSidebar}
 				/>
 				
@@ -70,7 +87,10 @@ export default function Layout({ children }) {
 				<Sidebar isVisible={isSidebarVisible} onToggleVisibility={toggleSidebar} />
 				
 				{/* Main content area */}
-				<main style={{ backgroundColor: 'var(--colors-background)' }}>
+				<main style={{ 
+					backgroundColor: 'var(--colors-background)',
+					marginLeft: isMobileView ? 0 : (isSidebarVisible ? '280px' : 0)
+				}}>
 					{children}
 					
 					{/* Decorative grid - subtle lines in the background */}
