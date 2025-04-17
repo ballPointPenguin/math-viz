@@ -85,10 +85,23 @@
   width: 85%;
   max-width: 320px;
   box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
+  background: var(--colors-backgroundAlt);
 }
 
-/* Add a subtle grid pattern to the sidebar */
-.sidebar::before {
+/* When in mobile view, we want a completely solid background */
+.sidebar.mobile::before {
+  display: none; /* Remove the grid pattern for mobile */
+}
+
+/* Add a solid background behind each component for mobile */
+.sidebar.mobile .sidebar-header,
+.sidebar.mobile .SidebarNavRoot,
+.sidebar.mobile .SidebarNavList {
+  background-color: var(--colors-backgroundAlt);
+}
+
+/* Add a subtle grid pattern to the sidebar - only for desktop */
+.sidebar:not(.mobile)::before {
   content: "";
   position: absolute;
   top: 0;
@@ -125,6 +138,11 @@
   list-style: none;
 }
 
+.SidebarNavList.mobile {
+  gap: 10px;
+  padding: 0.5rem 0;
+}
+
 .SidebarNavTrigger {
   display: flex;
   align-items: center;
@@ -143,9 +161,20 @@
   text-align: left;
 }
 
-.SidebarNavTrigger:hover {
-  background: var(--colors-surfaceHover);
-  color: var(--colors-text);
+/* Desktop only hover effects */
+@media (min-width: 769px) {
+  .SidebarNavTrigger:hover {
+    background: var(--colors-surfaceHover);
+    color: var(--colors-text);
+  }
+}
+
+/* Mobile specific styling for nav triggers */
+.SidebarNavTrigger.mobile {
+  font-size: 18px;
+  padding: 12px 16px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
 .SidebarNavTrigger[data-state='open'] {
@@ -168,6 +197,13 @@
   opacity: 1;
 }
 
+.SidebarNavContent.mobile[data-state='open'] {
+  padding: 8px 12px 8px 28px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 8px 8px;
+  margin-top: -4px;
+}
+
 .navLink {
   color: var(--colors-textMuted);
   text-decoration: none;
@@ -180,10 +216,19 @@
   font-family: var(--fonts-body);
 }
 
-.navLink:hover {
-  background: var(--colors-surfaceHover);
-  color: var(--colors-accent2);
-  transform: translateX(3px);
+.navLink.mobile {
+  font-size: 16px;
+  padding: 10px 16px;
+  margin: 2px 0;
+}
+
+/* Desktop only hover effects */
+@media (min-width: 769px) {
+  .navLink:hover {
+    background: var(--colors-surfaceHover);
+    color: var(--colors-accent2);
+    transform: translateX(3px);
+  }
 }
 
 .activeNavLink {
@@ -191,6 +236,11 @@
   color: var(--colors-accent1) !important;
   border-left: 2px solid var(--colors-accent1);
   box-shadow: var(--shadows-glow);
+}
+
+.activeNavLink.mobile {
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(163, 119, 255, 0.3);
 }
 
 /* Mobile overlay when sidebar is open */
@@ -201,10 +251,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   z-index: 90;
   opacity: 0;
   transition: opacity 0.3s ease;
+  backdrop-filter: blur(3px);
 }
 
 .sidebar-overlay.visible {
@@ -270,23 +321,25 @@ main h1::after, main h2::after {
   border-radius: 3px;
 }
 
-/* Feature card hover effects */
-a:hover .card-hover-effect {
-  opacity: 1;
-}
-
-a:hover div[style*="background: var(--colors-surface)"] {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  border-color: var(--colors-border);
-  background: var(--colors-surfaceHover) !important;
-}
-
-/* Add a subtle glow effect to icons on hover */
-a:hover div[style*="color: var(--colors-accent2)"] {
-  transform: scale(1.1);
-  color: var(--colors-accent1) !important;
-  filter: drop-shadow(0 0 8px rgba(163, 119, 255, 0.5));
+/* Feature card hover effects - desktop only */
+@media (min-width: 769px) {
+  a:hover .card-hover-effect {
+    opacity: 1;
+  }
+  
+  a:hover div[style*="background: var(--colors-surface)"] {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border-color: var(--colors-border);
+    background: var(--colors-surfaceHover) !important;
+  }
+  
+  /* Add a subtle glow effect to icons on hover */
+  a:hover div[style*="color: var(--colors-accent2)"] {
+    transform: scale(1.1);
+    color: var(--colors-accent1) !important;
+    filter: drop-shadow(0 0 8px rgba(163, 119, 255, 0.5));
+  }
 }
 
 /* Decorative elements animation */
