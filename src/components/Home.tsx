@@ -108,10 +108,6 @@ export default function Home() {
 					linkPath="/math-viz-demo"
 				/>
 			</Grid>
-
-			{/* Decorative elements - Use VE styles */}
-			<div className={styles.decorativeElement.element1} />
-			<div className={styles.decorativeElement.element2} />
 		</Box>
 	);
 }

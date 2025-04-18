@@ -29,42 +29,6 @@ body {
   position: relative;
 }
 
-/* Neon border effect */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1; /* Lowered z-index dramatically */
-  pointer-events: none;
-  border: 5px solid transparent;
-  box-shadow: inset 0 0 5px rgba(239, 71, 238, 0.6), 0 0 5px rgba(163, 119, 255, 0.8);
-  background-origin: border-box;
-  background-clip: border-box; /* Simplified background-clip */
-  animation: borderGlow 180s linear infinite; /* Adjusted duration slightly */
-  /* Use a single, wider gradient and set its size */
-  background-image: linear-gradient(90deg, 
-    rgba(163, 119, 255, 0.8), /* Purple */
-    rgba(239, 71, 238, 0.6),  /* Pink */
-    rgba(43, 236, 255, 0.8),  /* Cyan */
-    rgba(239, 71, 238, 0.6),  /* Pink */
-    rgba(163, 119, 255, 0.8)  /* Purple */
-  );
-  background-size: 400% 100%;
-}
-
-@keyframes borderGlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    /* Animate to move the background fully across its width */
-    background-position: 400% 50%; 
-  }
-}
-
 #root {
   margin: 0;
   padding: 0;
@@ -78,22 +42,4 @@ body::before {
 
 * {
   box-sizing: border-box;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(163, 119, 255, 0.6);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(239, 71, 238, 0.8);
 }

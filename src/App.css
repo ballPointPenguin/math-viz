@@ -7,9 +7,6 @@
 
 /* Sidebar toggle button base styles */
 .sidebar-toggle {
-  /* position: fixed; */ /* Handled by Box prop */
-  /* top: 20px; */ /* Handled by Box prop */
-  /* left: handled by Box prop */
   width: 40px;
   height: 40px;
   background: var(--colors-surface);
@@ -19,7 +16,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  /* z-index: 1000; */ /* Handled inline in Layout.jsx */
   transition: all 0.3s ease;
 }
 
@@ -38,10 +34,7 @@
   display: flex;
   flex-direction: column;
   padding: 0;
-  /* gap: 1.5rem; */ /* Gaps managed inside Sidebar.jsx with Box */
   box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
-  /* position: relative; */ /* <-- REMOVE THIS LINE, will be handled by Box prop */
-  /* overflow-y: auto; */ /* Handled by Box inside Sidebar.jsx */
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 100; /* Keep z-index for stacking */
 }
@@ -72,7 +65,6 @@
 /* Mobile overlay when sidebar is open */
 /* Keep overlay styles, display handled by Box in Layout.jsx */
 .sidebar-overlay {
-  /* display: none; */ /* Handled by Box prop */
   position: fixed;
   top: 0;
   left: 0;
@@ -110,31 +102,4 @@ main h1::after, main h2::after {
     var(--colors-accent2)
   );
   border-radius: 3px;
-}
-
-/* Decorative elements animation */
-/* .home-decorative-element {
-  animation: float 8s ease-in-out infinite;
-}
-
-.home-decorative-element:nth-child(odd) {
-  animation-delay: 2s;
-} */
-
-@keyframes float {
-  0% {
-    transform: translateY(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-10px) rotate(2deg);
-  }
-  50% {
-    transform: translateY(0) rotate(0deg);
-  }
-  75% {
-    transform: translateY(10px) rotate(-2deg);
-  }
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
 }

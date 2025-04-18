@@ -67,10 +67,10 @@ export default function Sidebar() {
 	return (
 		<Box
 			as="aside"
-			className={styles.sidebarContainer} // Use a simple container class if needed for width/base structure
+			// className={styles.sidebarContainer} // Use a simple container class if needed for width/base structure
 			width="280px" // Set width explicitly
 			display="flex"
-			flexDirection="column"
+			flexdirection="column"
 			position="fixed" // Assuming fixed sidebar positioning
 			top="0"
 			left="0"
@@ -162,7 +162,7 @@ export default function Sidebar() {
 				mt="auto"
 				p="3"
 				display="flex"
-				alignItems="center"
+				alignitems="center"
 				gap="2" // Use Radix gap
 				style={{
 					borderTop: "1px solid var(--border)",
