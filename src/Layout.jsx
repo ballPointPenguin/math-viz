@@ -1,20 +1,21 @@
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { Box } from "@radix-ui/themes";
+import { Box, IconButton } from "@radix-ui/themes";
 import clsx from "clsx";
 import React, { useState } from "react";
 import Sidebar from "./components/ui/Sidebar.jsx";
-import { layoutContainer } from "./layout.css";
+import * as styles from "./layout.css";
 
 export default function Layout({ children }) {
-	const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+	const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
 	const toggleSidebar = () => {
+		console.log("toggleSidebar");
 		setIsSidebarVisible(!isSidebarVisible);
 	};
 
 	return (
 		<Box
-			className={clsx(layoutContainer)}
+			className={clsx(styles.layoutContainer)}
 			height="100vh"
 			overflow="hidden"
 			position="relative"
@@ -24,45 +25,28 @@ export default function Layout({ children }) {
 
 			{/* Content container using Box with Flex properties */}
 			<Box display="flex" width="100%" height="100%">
-				{/* Sidebar toggle button */}
-				<Box
-					as="button"
-					className="sidebar-toggle"
-					onClick={toggleSidebar}
-					position="fixed"
-					top="4"
-					left={{
-						initial: "4",
-						sm: isSidebarVisible ? "calc(280px + var(--space-4))" : "4",
-					}}
-					style={{
-						zIndex: 1000,
-						border: "none",
-						background: "var(--gray-a3)",
-						padding: "var(--space-2)",
-						borderRadius: "var(--radius-3)",
-					}}
-				>
-					<HamburgerMenuIcon color="var(--gray-11)" />
+				{/* Always render Sidebar, control visibility via transform */}
+				<Sidebar isVisible={isSidebarVisible} />
+
+				{/* Wrapper Box for positioning the IconButton */}
+				<Box position="fixed" top="4" left="4" style={{ zIndex: 1000 }}>
+					{/* Sidebar toggle button - IconButton */}
+					<IconButton
+						variant="outline"
+						color="gray"
+						highContrast
+						onClick={toggleSidebar}
+						aria-label="Toggle sidebar"
+					>
+						<HamburgerMenuIcon />
+					</IconButton>
 				</Box>
 
-				{/* Overlay for mobile - only visible when sidebar is open */}
-				{/* <Box
-					className={`sidebar-overlay ${isSidebarVisible ? "visible" : ""}`}
+				{/* Overlay for mobile - uses styles from layout.css.ts */}
+				<Box
+					className={clsx(styles.sidebarOverlay, isSidebarVisible && "visible")}
 					onClick={toggleSidebar}
-					display={{
-						initial: isSidebarVisible ? "block" : "none",
-						sm: "none",
-					}}
-				/> */}
-
-				{/* Sidebar component - Conditionally render */}
-				{isSidebarVisible && (
-					<Sidebar
-						isVisible={isSidebarVisible}
-						onToggleVisibility={toggleSidebar}
-					/>
-				)}
+				/>
 
 				{/* Main content area using Box */}
 				<Box
@@ -73,11 +57,6 @@ export default function Layout({ children }) {
 					pr={{ initial: "3", sm: "5" }}
 					pt={{ initial: "7", sm: "5" }}
 					pb={{ initial: "3", sm: "5" }}
-					style={{
-						marginLeft: isSidebarVisible ? "280px" : "0px",
-						transition: "margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-						position: "relative",
-					}}
 				>
 					{children}
 				</Box>

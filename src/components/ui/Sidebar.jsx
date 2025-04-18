@@ -62,26 +62,15 @@ const CustomLink = ({ to, children }) => {
 	);
 };
 
-export default function Sidebar() {
+export default function Sidebar({ isVisible }) {
 	// Use Radix Box for the sidebar container
 	return (
 		<Box
 			as="aside"
-			// className={styles.sidebarContainer} // Use a simple container class if needed for width/base structure
-			width="280px" // Set width explicitly
-			display="flex"
-			flexdirection="column"
-			position="fixed" // Assuming fixed sidebar positioning
-			top="0"
-			left="0"
-			bottom="0"
-			// Use Radix theme variable for background
-			style={{
-				background: "var(--gray-2)", // Example: Use a Radix color variable
-				borderRight: "1px solid var(--border)", // Use Radix border variable
-				boxShadow: "var(--shadow-4)", // Example Radix shadow
-				zIndex: 100, // Keep zIndex
-			}}
+			className={clsx(
+				styles.sidebarContainer,
+				isVisible && styles.sidebarVisible,
+			)}
 		>
 			{/* Sidebar Header */}
 			<Box

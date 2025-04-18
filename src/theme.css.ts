@@ -1,83 +1,90 @@
 import {
+	blackA,
 	blueDark,
 	cyanDark,
+	grayDark,
 	indigoDark,
+	mauveDark,
 	plumDark,
 	purpleDark,
 	tealDark,
 	violetDark,
-	blackA,
 	whiteA,
-	mauveDark,
-	gray,
-	grayDark,
 } from "@radix-ui/colors";
 import { createTheme, globalStyle, style } from "@vanilla-extract/css";
 
 // Add debug styles to make elements more visible
 export const debugOutline = style({
-	outline: '1px solid rgba(255, 0, 0, 0.5)',
+	outline: "1px solid rgba(255, 0, 0, 0.5)",
 });
 
-// Vaporwave meets Dark Academic theme
+// Define the dark theme using createTheme and spreading Radix scales
 export const [theme, vars] = createTheme({
 	colors: {
-		// Base colors - making background slightly lighter to ensure visibility
-		background: grayDark.gray2, // Changed from blackA.blackA2 for better visibility
+		// Spread all the desired Radix dark scales
+		...grayDark,
+		...blueDark,
+		...cyanDark,
+		...indigoDark,
+		...plumDark,
+		...purpleDark,
+		...tealDark,
+		...violetDark,
+		...mauveDark,
+		...blackA,
+		...whiteA,
+
+		// --- Semantic Aliases ---
+		// Map semantic names to specific Radix steps
+
+		// Core UI
+		background: grayDark.gray2,
 		backgroundAlt: grayDark.gray3,
-		text: whiteA.whiteA12,
-		textMuted: whiteA.whiteA10,
-		
-		// Primary vaporwave colors
+		text: grayDark.gray12,
+		textMuted: grayDark.gray11,
+
+		// Primary (Vaporwave)
 		primary: purpleDark.purple9,
 		primaryLight: purpleDark.purple8,
 		primaryDark: purpleDark.purple10,
-		
-		// Secondary colors
+
+		// Secondary
 		secondary: tealDark.teal9,
 		secondaryLight: tealDark.teal8,
 		secondaryDark: tealDark.teal10,
-		
-		// Accent colors
-		accent1: plumDark.plum9,    // Pink/purple
-		accent2: cyanDark.cyan9,    // Cyan
-		accent3: violetDark.violet9,  // Violet
-		accent4: indigoDark.indigo9,  // Indigo
-		
-		// UI element colors
+
+		// Accents
+		accent1: plumDark.plum9,
+		accent2: cyanDark.cyan9,
+		accent3: violetDark.violet9,
+		accent4: indigoDark.indigo9,
+
+		// UI Elements (map to steps within the spread scales)
 		surface: grayDark.gray3,
 		surfaceHover: grayDark.gray4,
 		surfaceActive: grayDark.gray5,
 		border: grayDark.gray6,
-		
-		// Semantic colors
+
+		// Semantic States (map to steps)
 		success: tealDark.teal10,
 		error: plumDark.plum10,
 		warning: mauveDark.mauve9,
 		info: blueDark.blue9,
-		
-		// Keep original Radix colors for components that need them
-		...grayDark,
-		...purpleDark,
-		...mauveDark,
-		...tealDark,
-		...cyanDark,
-		...violetDark,
-		...indigoDark,
-		...blueDark,
-		...plumDark,
+
+		// Specific Overrides if needed (try to avoid)
+		// Example: specificWidgetBackground: blueDark.blue2,
 	},
 	fonts: {
 		body: "'Space Mono', 'Input Mono', 'IBM Plex Mono', monospace",
 		heading: "'Libre Baskerville', 'Garamond', serif",
 	},
 	space: {
-		'1': "4px",
-		'2': "8px",
-		'3': "16px",
-		'4': "24px",
-		'5': "32px",
-		'6': "48px",
+		"1": "4px",
+		"2": "8px",
+		"3": "16px",
+		"4": "24px",
+		"5": "32px",
+		"6": "48px",
 	},
 	radii: {
 		sm: "2px",

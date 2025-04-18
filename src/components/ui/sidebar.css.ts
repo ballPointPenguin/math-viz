@@ -1,5 +1,6 @@
 import { keyframes, style } from "@vanilla-extract/css";
 import { sprinkles } from "../../sprinkles.css";
+import { vars } from "../../theme.css";
 
 const slideDown = keyframes({
 	from: {
@@ -167,9 +168,48 @@ export const linkHoverTransformDesktop = style({
 export const activeLink = style({
 	backgroundColor: "var(--gray-5) !important",
 	color: "var(--plum-9) !important",
-	borderLeft: "2px solid var(--plum-9)",
-	boxShadow: "var(--shadow-3)",
+	fontWeight: "500",
 	selectors: {
 		[`&.${link}`]: {},
 	},
+});
+
+// Container for the main sidebar element
+export const sidebarContainer = style({
+	background: vars.colors.backgroundAlt,
+	borderRight: `1px solid ${vars.colors.border}`,
+	color: vars.colors.text,
+	width: "280px",
+	minWidth: "280px",
+	display: "flex",
+	flexDirection: "column",
+	position: "fixed",
+	top: 0,
+	left: 0,
+	bottom: 0,
+	height: "100vh",
+	boxShadow: "2px 0 15px rgba(0, 0, 0, 0.3)",
+	zIndex: 100,
+	transform: "translateX(-100%)",
+	transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+
+	// Grid pattern from App.css
+	"::before": {
+		content: "",
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		backgroundImage:
+			"linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)",
+		backgroundSize: "20px 20px",
+		pointerEvents: "none",
+		zIndex: -1, // Behind content
+	},
+});
+
+// Style to apply when sidebar should be visible
+export const sidebarVisible = style({
+	transform: "translateX(0)",
 });
