@@ -1,127 +1,89 @@
 # Code Patterns
 
-## Better Practices
+## Guiding Principles
 
-### Responsive Design
+Our primary approach is to leverage **Radix UI Themes props and components** for styling whenever possible. This ensures consistency with the Radix ecosystem, utilizes its built-in theming and responsive features effectively, and often leads to cleaner component code.
 
-Based on the documentation and industry practices, here's the recommended approach for handling responsive styles with Radix-UI and vanilla-extract in React.
+**Vanilla Extract (VE)**, including `sprinkles`, should be used more selectively for cases where Radix props are insufficient or less suitable. These include:
 
-Key recommendations:
+* Defining complex CSS selectors (e.g., intricate `:hover` states, `:nth-child`, attribute selectors, complex descendant/sibling selectors).
+* Implementing custom animations (`@keyframes`).
+* Applying styles that are not directly covered by Radix props or require combining multiple properties in a way not easily expressible through props.
+* Styling custom non-Radix elements within components.
+* Creating highly reusable style variants (`styleVariants`) for custom components.
+* Defining the core theme contract (`theme.css.ts`) and necessary global styles (`globalStyle`).
 
-1. Use Radix's responsive props for layout components
-2. Use vanilla-extract media queries for complex responsive styles
-3. Create a sprinkles configuration for design token consistency
-4. Avoid mixing Radix's object syntax with vanilla-extract's CSS-in-JS
+## Styling Hierarchy (Recommended Order of Preference)
 
-#### Canonical Approach
+1. **Radix Themes Props (e.g., `m`, `p`, `color`, `width`, `height`, `radius` on `<Box>`, `<Text>`, etc.):**
+    * **Use For:** Layout, spacing, typography, applying theme colors/radii/shadows directly to Radix components. These props integrate seamlessly with the Radix theme tokens and responsive system.
+    * **When:** This is your **default and primary tool** when working with Radix components (`Box`, `Grid`, `Flex`, `Text`, `Heading`, etc.) for common layout, spacing, and theme-based styling.
 
-The recommended pattern is to use Radix's built-in responsive props with their theme components rather than mixing with vanilla-extract's CSS-in-JS approach directly.
+2. **Component-Specific `.css.ts` Files (using VE: `style`, `sprinkles`, `styleVariants`, `@keyframes`):**
+    * **Use For:** Applying styles in the specific scenarios outlined in the *Guiding Principles* above where Radix props are insufficient. This includes complex selectors, custom animations, unique component styles not easily covered by Radix, styling non-Radix elements, or creating reusable style variants for custom components.
+    * **When:** Reach for this method **only after** determining that Radix props cannot easily or cleanly achieve the desired styling for a specific component (like `FeatureCard`, `Sidebar`, custom visualization elements).
 
-example
+3. **Theme File (`theme.css.ts`):**
+    * **Use For:**
+        * Defining the core VE theme contract (`createTheme`, `vars`) if needed for custom VE variables used in exceptional cases.
+        * Defining essential global styles (`globalStyle`) that are fundamental to the *overall application appearance* and not handled by Radix Themes defaults (e.g., base body styles, `::selection`, specific resets).
+    * **When:** Primarily for setting up the theme contract and minimal, truly global base styles. Avoid defining component-specific styles here.
+
+4. **Global CSS Files (`App.css`, `index.css`):**
+    * **Use For:** Styles that are global but outside the VE theme contract or component logic.
+        * `@import` or `@font-face` for fonts.
+        * Third-party CSS library imports (e.g., `katex.min.css`).
+        * Global animations (`@keyframes`) if *not* tied to specific components styled with VE.
+        * Minimal resets beyond Radix/theme defaults.
+    * **When:** For global setup and external resources. Strongly avoid defining styles for specific components or classes used within components here.
+
+5. **Inline Styles (`style={{...}}`):**
+    * **Use For:** Highly dynamic styles based on runtime JavaScript calculations (e.g., element position calculated dynamically) that cannot be reasonably achieved with CSS variables or pre-defined classes.
+    * **When:** **RARELY.** This should be a last resort. Overusing inline styles bypasses the design system, can harm performance, and makes overriding/managing styles difficult.
+
+## Responsive Design
+
+Follow the styling hierarchy:
+
+1. **Radix Responsive Props:** Use Radix's object syntax for responsive props (`padding={{ initial: '2', sm: '3' }}`) on Radix components. This is the preferred method.
+2. **Vanilla Extract Media Queries:** If styling requires VE (per the hierarchy), use VE's `@media` blocks within your `.css.ts` files or define responsive conditions in `sprinkles` if using sprinkles for those specific styles.
 
 ```jsx
-// Update your vanilla-extract styles to use media queries directly
-import { style, media } from '@vanilla-extract/css';
-
-export const trigger = style({
-  padding: '8px 12px',
-  fontSize: '15px',
-  [media('md')]: {
-    padding: '12px 16px',
-    fontSize: '16px'
-  }
-});
-```
-
-#### Component-Level Styles
-
-```jsx
-// Use Radix's responsive props directly in JSX
+// Preferred: Radix Responsive Props
 <Box
   padding={{ initial: '2', sm: '3', md: '4' }}
-  margin={{ sm: '1', md: '2' }}
+  display={{ initial: 'block', md: 'flex' }}
 >
-```
+  {/* ... */}
+</Box>
 
-#### Gobal Styles
+// Secondary: VE Media Queries (if using VE for the component's style)
+// In component.css.ts
+import { style } from '@vanilla-extract/css';
 
-```jsx
-// Use vanilla-extract media queries with Sprinkles
-import { sprinkles } from './sprinkles.css.ts';
-
-export const responsiveClass = sprinkles({
-  padding: {
-    mobile: '2',
-    tablet: '3',
-    desktop: '4'
-  }
-});
-```
-
-#### Implementation Example
-
-```jsx
-// sprinkles.css.ts
-import { defineProperties, createSprinkles } from '@vanilla-extract/sprinkles';
-
-const responsiveProperties = defineProperties({
-  conditions: {
-    mobile: {},
-    tablet: { '@media': 'screen and (min-width: 768px)' },
-    desktop: { '@media': 'screen and (min-width: 1024px)' }
-  },
-  defaultCondition: 'mobile',
-  properties: {
-    padding: {
-      '0': '0',
-      '1': '4px',
-      '2': '8px',
-      '3': '12px',
-      '4': '16px'
+export const customElementStyle = style({
+  // Base styles
+  color: 'blue',
+  
+  '@media': {
+    'screen and (min-width: 768px)': {
+      // Tablet+ styles
+      color: 'red',
     },
-    // Add other properties as needed
+    'screen and (min-width: 1024px)': {
+      // Desktop+ styles
+      fontSize: '20px',
+    }
   }
 });
-
-export const sprinkles = createSprinkles(responsiveProperties);
 ```
 
-#### Further Reading
+Avoid mixing Radix's responsive object syntax directly within VE `style` definitions.
 
-- <https://vanilla-extract.style/documentation/packages/sprinkles/>
-- <https://vanilla-extract.style/documentation/packages/recipes/>
-- <https://vanilla-extract.style/documentation/packages/dynamic/>
-- <https://www.radix-ui.com/colors/docs/overview/usage#vanilla-extract>
-- <https://www.radix-ui.com/themes/docs/components/theme>
-- <https://www.radix-ui.com/themes/docs/theme/breakpoints>
+## Further Reading
 
-### Hierarchy of Styling Methods (General Recommendation)
-
-1. Radix Themes Props (e.g., m, p, color, width, height on `<Box>`, `<Text>` etc.):
-   - Use For: Layout, spacing, basic typography, applying theme colors directly to Radix components. These props are designed to work seamlessly with the Radix theme tokens and responsive system. They often generate utility classes behind the scenes.
-   - When: Your primary tool when working directly with Radix components (Box, Grid, Flex, Text, Heading, etc.) for common layout and theme-based styling.
-2. Component-Specific .css.ts Files (using style, sprinkles, styleVariants):
-   - Use For: Defining the specific styles for your custom components (like FeatureCard, Home, Sidebar) or applying more complex styles/overrides to Radix components that props don't cover. This includes:
-     - Combining multiple sprinkle properties (sprinkles({...})).
-     - Adding custom styles alongside sprinkles (style([sprinkles({...}), { custom styles }])).
-     - Defining complex selectors (pseudo-classes like :hover, :focus, descendant/child selectors).
-     - Creating variants of a component (styleVariants).
-     - Animations (@keyframes imported and used).
-     - Styles tightly coupled to the component's structure or unique visual appearance.
-   - When: This should be your go-to for styling any non-trivial component logic or appearance. It keeps styles co-located with the component using them.
-3. Theme File (theme.css.ts):
-   - Use For:
-     - Defining the theme contract (createTheme, vars). This is its main job.
-     - Defining truly global styles that are fundamental to the theme (using globalStyle). Examples: base body font/color/background, ::selection styles, maybe base a tag styles if not handled by Radix Themes defaults.
-   - When: Only for defining the theme and the most basic, theme-dependent global resets/defaults. Avoid defining component-specific styles here, even using globalStyle.
-4. Global CSS Files (App.css, index.css):
-   - Use For: Styles that are global but not directly part of the theme contract or component logic.
-     - @import or @font-face for fonts.
-     - Third-party CSS library imports (like katex.min.css).
-     - Global animations (@keyframes float {}).
-     - Very minimal resets if needed beyond what Radix/theme provides.
-     - Maybe CSS for elements outside your main React app structure (if any).
-   - When: For global setup and things not tied to components or the dynamic theme. Strongly avoid defining styles for specific components or classes used within components here.
-5. Inline Styles (style={{...}}):
-   - Use For: Highly dynamic styles based on runtime JavaScript calculations that cannot be reasonably achieved with CSS variables or pre-defined classes.
-   - When: RARELY. Almost always prefer one of the above methods. Overusing inline styles bypasses the benefits of your design system, hurts performance, and makes overriding/managing styles difficult.
+* <https://www.radix-ui.com/themes/docs/overview/styling>
+* <https://www.radix-ui.com/themes/docs/theme/breakpoints>
+* <https://www.radix-ui.com/themes/docs/components/box#layout-props>
+* <https://vanilla-extract.style/documentation/styling/>
+* <https://vanilla-extract.style/documentation/packages/sprinkles/>
