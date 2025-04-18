@@ -4,7 +4,6 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import Sidebar from "./components/ui/Sidebar.jsx";
 import { layoutContainer } from "./layout.css";
-import { theme } from "./theme.css.ts";
 
 export default function Layout({ children }) {
 	const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -15,7 +14,7 @@ export default function Layout({ children }) {
 
 	return (
 		<Box
-			className={clsx(theme, layoutContainer)}
+			className={clsx(layoutContainer)}
 			height="100vh"
 			overflow="hidden"
 			position="relative"
@@ -57,14 +56,24 @@ export default function Layout({ children }) {
 			<Box display="flex" width="100%" height="100%">
 				{/* Sidebar toggle button */}
 				<Box
+					as="button"
 					className="sidebar-toggle"
 					onClick={toggleSidebar}
 					position="fixed"
-					top="20px"
-					left={{ initial: "20px", sm: isSidebarVisible ? "300px" : "20px" }}
-					style={{ zIndex: 1000 }}
+					top="4"
+					left={{
+						initial: "4",
+						sm: isSidebarVisible ? "calc(280px + var(--space-4))" : "4",
+					}}
+					style={{
+						zIndex: 1000,
+						border: "none",
+						background: "var(--gray-a3)",
+						padding: "var(--space-2)",
+						borderRadius: "var(--radius-3)",
+					}}
 				>
-					<HamburgerMenuIcon />
+					<HamburgerMenuIcon color="var(--gray-11)" />
 				</Box>
 
 				{/* Overlay for mobile - only visible when sidebar is open */}
@@ -92,11 +101,12 @@ export default function Layout({ children }) {
 					overflowY="auto"
 					pl={{ initial: "3", sm: "5" }}
 					pr={{ initial: "3", sm: "5" }}
-					pt={{ initial: "6", sm: "5" }}
+					pt={{ initial: "7", sm: "5" }}
 					pb={{ initial: "3", sm: "5" }}
-					ml={{ initial: "0", sm: isSidebarVisible ? "280px" : "0" }}
 					style={{
+						marginLeft: isSidebarVisible ? "280px" : "0px",
 						transition: "margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+						position: "relative",
 					}}
 				>
 					{children}
@@ -110,8 +120,8 @@ export default function Layout({ children }) {
 							right: 0,
 							bottom: 0,
 							backgroundImage: `
-								linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-								linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px)
+								linear-gradient(to right, var(--gray-a2) 1px, transparent 1px),
+								linear-gradient(to bottom, var(--gray-a2) 1px, transparent 1px)
 							`,
 							backgroundSize: "50px 50px",
 							pointerEvents: "none",
