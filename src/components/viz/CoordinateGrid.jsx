@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Box, Flex, Slider, Text, Button } from '@radix-ui/themes';
 import { MagnifyingGlassIcon, MinusIcon, PlusIcon, ResetIcon } from '@radix-ui/react-icons';
-import { useP5 } from '@p5-wrapper/react';
+import { ReactP5Wrapper } from '@p5-wrapper/react';
 
 // Customizable grid component with dark academia + vaporwave aesthetic
 export const CoordinateGrid = ({
@@ -184,7 +184,7 @@ export const CoordinateGrid = ({
   };
 
   // Initialize p5
-  const { p5Instance } = useP5(sketch);
+  // const { p5Instance } = useP5(sketch);
   
   // Reset view function
   const resetView = () => {

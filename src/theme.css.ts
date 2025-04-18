@@ -72,12 +72,12 @@ export const [theme, vars] = createTheme({
 		heading: "'Libre Baskerville', 'Garamond', serif",
 	},
 	space: {
-		1: "4px",
-		2: "8px",
-		3: "16px",
-		4: "24px",
-		5: "32px",
-		6: "48px",
+		'1': "4px",
+		'2': "8px",
+		'3': "16px",
+		'4': "24px",
+		'5': "32px",
+		'6': "48px",
 	},
 	radii: {
 		sm: "2px",
@@ -104,11 +104,6 @@ globalStyle("body", {
 });
 
 globalStyle("#root", {
-	backgroundColor: vars.colors.background,
-	color: vars.colors.text,
-});
-
-globalStyle(".mainBg", {
 	backgroundColor: vars.colors.background,
 	color: vars.colors.text,
 });

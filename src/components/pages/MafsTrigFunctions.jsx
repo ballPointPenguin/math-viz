@@ -11,7 +11,7 @@ import {
 } from "mafs";
 import * as React from "react";
 import "mafs/core.css";
-import { BlockMath, InlineMath } from "./KaTeX.jsx";
+import { BlockMath } from "../KaTeX.jsx";
 
 // Constants
 const RADIUS = 1;

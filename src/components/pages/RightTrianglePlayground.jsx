@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { BlockMath } from "./KaTeX.jsx";
+import { BlockMath } from "../KaTeX.jsx";
 import { round, sqrt, pi } from "mathjs";
 
 function toDeg(rad) {

@@ -2,7 +2,7 @@ import { ReactP5Wrapper } from "@p5-wrapper/react";
 import * as math from "mathjs";
 import { useEffect, useState } from "react";
 import "katex/dist/katex.min.css";
-import { BlockMath, InlineMath } from "./KaTeX.jsx";
+import { BlockMath, InlineMath } from "../KaTeX.jsx";
 
 function VectorSketch({ vectorA, vectorB }) {
 	// P5 sketch function

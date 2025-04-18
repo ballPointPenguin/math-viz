@@ -1,6 +1,6 @@
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import React from "react";
-import { BlockMath } from "./KaTeX.jsx";
+import { BlockMath } from "../KaTeX.jsx";
 
 function sketch(p) {
 	let angle = 0;

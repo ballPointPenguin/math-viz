@@ -1,6 +1,6 @@
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import React from "react";
-import { BlockMath } from "./KaTeX.jsx";
+import { BlockMath } from "../KaTeX.jsx";
 
 // Optionally import mathjs for future extensions
 // import { sin, cos, pi } from "mathjs";

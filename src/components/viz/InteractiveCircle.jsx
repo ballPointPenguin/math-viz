@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Flex, Slider, Text, Switch, RadioGroup, Button } from '@radix-ui/themes';
 import { Cross2Icon, MinusIcon, PlusIcon } from '@radix-ui/react-icons';
-import { useP5 } from '@p5-wrapper/react';
+import { ReactP5Wrapper } from '@p5-wrapper/react';
 
 // Customizable interactive circle component with dark academia + vaporwave aesthetic
 export const InteractiveCircle = ({
@@ -225,7 +225,7 @@ export const InteractiveCircle = ({
   };
 
   // Initialize p5
-  const { p5Instance } = useP5(sketch);
+  // const { p5Instance } = useP5(sketch);
   
   // Update radius when it changes in the control
   useEffect(() => {

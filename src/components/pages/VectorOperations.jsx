@@ -1,6 +1,6 @@
 import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { useEffect, useState } from "react";
-import { BlockMath, InlineMath } from "./KaTeX.jsx";
+import { BlockMath, InlineMath } from "../KaTeX.jsx";
 import "./VectorOperations.css";
 
 function sketch(p) {

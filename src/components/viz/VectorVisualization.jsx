@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Flex, Slider, Text, Switch, Select, Button } from '@radix-ui/themes';
 import { Cross2Icon, MinusIcon, PlusIcon } from '@radix-ui/react-icons';
-import { useP5 } from '@p5-wrapper/react';
+import { ReactP5Wrapper } from '@p5-wrapper/react';
 import * as math from 'mathjs';
 
 // Vector visualization component with dark academia + vaporwave aesthetic
@@ -425,7 +425,7 @@ export const VectorVisualization = ({
   };
 
   // Initialize p5
-  const { p5Instance } = useP5(sketch);
+  // const { p5Instance } = useP5(sketch);
   
   // Handle vector updates
   const updateVector = (index, property, value) => {

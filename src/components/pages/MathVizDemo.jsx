@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Flex, Heading, Text, Tabs, Card, Separator } from '@radix-ui/themes';
-import CoordinateGrid from './CoordinateGrid';
-import InteractiveCircle from './InteractiveCircle';
-import VectorVisualization from './VectorVisualization';
+import CoordinateGrid from '../viz/CoordinateGrid';
+import InteractiveCircle from '../viz/InteractiveCircle';
+import VectorVisualization from '../viz/VectorVisualization';
 
 const MathVizDemo = () => {
   const [selectedPoint, setSelectedPoint] = useState(null);

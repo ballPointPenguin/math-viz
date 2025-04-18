@@ -1,41 +1,15 @@
 /* App.css: Vaporwave + Dark Academic styling with vanilla-extract theme vars */
 
-.mainBg {
-  background-color: var(--colors-background);
-  color: var(--colors-text);
-  min-height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  position: relative;
-  z-index: 2;
-  background-image: 
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.95)),
-    url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(163, 119, 255, 0.1)' fill-rule='evenodd'/%3E%3C/svg%3E");
-}
-
 /* Add this debug class to help identify rendering issues */
 .debug-outline * {
   outline: 1px solid rgba(255, 0, 0, 0.5);
 }
 
-/* Main content container */
-.content-container {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-  z-index: 10;
-}
-
-/* Sidebar toggle button */
+/* Sidebar toggle button base styles */
 .sidebar-toggle {
-  position: fixed;
-  top: 20px;
-  left: 20px;
+  /* position: fixed; */ /* Handled by Box prop */
+  /* top: 20px; */ /* Handled by Box prop */
+  /* left: handled by Box prop */
   width: 40px;
   height: 40px;
   background: var(--colors-surface);
@@ -45,7 +19,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 1000;
+  /* z-index: 1000; */ /* Handled inline in Layout.jsx */
   transition: all 0.3s ease;
 }
 
@@ -54,54 +28,27 @@
   box-shadow: var(--shadows-glow);
 }
 
-/* Sidebar styling */
+/* Sidebar base styling */
 .sidebar {
   background: var(--colors-backgroundAlt);
   border-right: 1px solid var(--colors-border);
   color: var(--colors-text);
-  height: 100vh;
-  width: 280px;
+  width: 280px; /* Keep width defined */
   min-width: 280px;
   display: flex;
   flex-direction: column;
   padding: 0;
-  gap: 1.5rem;
+  /* gap: 1.5rem; */ /* Gaps managed inside Sidebar.jsx with Box */
   box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow-y: auto;
+  /* position: relative; */ /* <-- REMOVE THIS LINE, will be handled by Box prop */
+  /* overflow-y: auto; */ /* Handled by Box inside Sidebar.jsx */
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 100;
+  z-index: 100; /* Keep z-index for stacking */
 }
 
-.sidebar.hidden {
-  transform: translateX(-100%);
-}
-
-/* Mobile specific sidebar styling */
-.sidebar.mobile {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 85%;
-  max-width: 320px;
-  box-shadow: 5px 0 25px rgba(0, 0, 0, 0.5);
-  background: var(--colors-backgroundAlt);
-}
-
-/* When in mobile view, we want a completely solid background */
-.sidebar.mobile::before {
-  display: none; /* Remove the grid pattern for mobile */
-}
-
-/* Add a solid background behind each component for mobile */
-.sidebar.mobile .sidebar-header,
-.sidebar.mobile .SidebarNavRoot,
-.sidebar.mobile .SidebarNavList {
-  background-color: var(--colors-backgroundAlt);
-}
-
-/* Add a subtle grid pattern to the sidebar - only for desktop */
-.sidebar:not(.mobile)::before {
+/* Subtle grid pattern for the sidebar */
+/* This can be kept or removed based on preference */
+.sidebar::before {
   content: "";
   position: absolute;
   top: 0;
@@ -119,133 +66,13 @@
     );
   background-size: 20px 20px;
   pointer-events: none;
-  z-index: 0;
-}
-
-/* Navigation menu styling */
-.SidebarNavRoot {
-  width: 100%;
-  position: relative;
-  z-index: 1;
-}
-
-.SidebarNavList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.SidebarNavList.mobile {
-  gap: 10px;
-  padding: 0.5rem 0;
-}
-
-.SidebarNavTrigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 15px;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  color: var(--colors-textMuted);
-  font-family: var(--fonts-heading);
-  font-size: 16px;
-  font-weight: 300;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 100%;
-  text-align: left;
-}
-
-/* Desktop only hover effects */
-@media (min-width: 769px) {
-  .SidebarNavTrigger:hover {
-    background: var(--colors-surfaceHover);
-    color: var(--colors-text);
-  }
-}
-
-/* Mobile specific styling for nav triggers */
-.SidebarNavTrigger.mobile {
-  font-size: 18px;
-  padding: 12px 16px;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-
-.SidebarNavTrigger[data-state='open'] {
-  background: var(--colors-surfaceActive);
-  color: var(--colors-primary);
-  text-shadow: 0 0 8px rgba(174, 129, 255, 0.5);
-}
-
-.SidebarNavContent {
-  overflow: hidden;
-  padding: 0;
-  height: 0;
-  opacity: 0;
-  transition: height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
-}
-
-.SidebarNavContent[data-state='open'] {
-  padding: 5px 10px 5px 25px;
-  height: auto;
-  opacity: 1;
-}
-
-.SidebarNavContent.mobile[data-state='open'] {
-  padding: 8px 12px 8px 28px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 0 0 8px 8px;
-  margin-top: -4px;
-}
-
-.navLink {
-  color: var(--colors-textMuted);
-  text-decoration: none;
-  font-weight: 300;
-  padding: 8px 15px;
-  border-radius: 4px;
-  display: block;
-  transition: all 0.2s ease;
-  position: relative;
-  font-family: var(--fonts-body);
-}
-
-.navLink.mobile {
-  font-size: 16px;
-  padding: 10px 16px;
-  margin: 2px 0;
-}
-
-/* Desktop only hover effects */
-@media (min-width: 769px) {
-  .navLink:hover {
-    background: var(--colors-surfaceHover);
-    color: var(--colors-accent2);
-    transform: translateX(3px);
-  }
-}
-
-.activeNavLink {
-  background: var(--colors-surfaceActive);
-  color: var(--colors-accent1) !important;
-  border-left: 2px solid var(--colors-accent1);
-  box-shadow: var(--shadows-glow);
-}
-
-.activeNavLink.mobile {
-  background: rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 10px rgba(163, 119, 255, 0.3);
+  z-index: -1; /* Ensure it's behind content */
 }
 
 /* Mobile overlay when sidebar is open */
+/* Keep overlay styles, display handled by Box in Layout.jsx */
 .sidebar-overlay {
-  display: none;
+  /* display: none; */ /* Handled by Box prop */
   position: fixed;
   top: 0;
   left: 0;
@@ -259,43 +86,7 @@
 }
 
 .sidebar-overlay.visible {
-  display: block;
   opacity: 1;
-}
-
-/* Main content area */
-main {
-  flex: 1;
-  height: 100vh;
-  overflow-y: auto;
-  position: relative;
-  padding: 2.5rem 3rem;
-  transition: margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  background-color: var(--colors-background);
-  color: var(--colors-text);
-}
-
-/* Mobile view adjustments for main content */
-@media (max-width: 768px) {
-  main {
-    padding: 1.5rem;
-    padding-top: 4rem; /* Extra space for the toggle button on mobile */
-    width: 100%;
-  }
-  
-  /* Adjust font sizes for mobile */
-  main h1 {
-    font-size: 1.75rem;
-  }
-  
-  main h2 {
-    font-size: 1.5rem;
-  }
-}
-
-/* Adjust main content when sidebar is hidden */
-.sidebar.hidden + main {
-  margin-left: 0;
 }
 
 /* Headings with decorative underline */
@@ -321,35 +112,14 @@ main h1::after, main h2::after {
   border-radius: 3px;
 }
 
-/* Feature card hover effects - desktop only */
-@media (min-width: 769px) {
-  a:hover .card-hover-effect {
-    opacity: 1;
-  }
-  
-  a:hover div[style*="background: var(--colors-surface)"] {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    border-color: var(--colors-border);
-    background: var(--colors-surfaceHover) !important;
-  }
-  
-  /* Add a subtle glow effect to icons on hover */
-  a:hover div[style*="color: var(--colors-accent2)"] {
-    transform: scale(1.1);
-    color: var(--colors-accent1) !important;
-    filter: drop-shadow(0 0 8px rgba(163, 119, 255, 0.5));
-  }
-}
-
 /* Decorative elements animation */
-.home-decorative-element {
+/* .home-decorative-element {
   animation: float 8s ease-in-out infinite;
 }
 
 .home-decorative-element:nth-child(odd) {
   animation-delay: 2s;
-}
+} */
 
 @keyframes float {
   0% {
@@ -367,18 +137,4 @@ main h1::after, main h2::after {
   100% {
     transform: translateY(0) rotate(0deg);
   }
-}
-
-/* Ensure root container styling */
-#root {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--colors-background);
-  color: var(--colors-text);
 }

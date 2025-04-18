@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BlockMath } from "./KaTeX.jsx";
+import { BlockMath } from "../KaTeX.jsx";
 import { pi, round } from "mathjs";
 
 function toPiString(rad) {

@@ -1,37 +1,25 @@
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import React, { useState, useEffect } from "react";
-import Sidebar from "./components/Sidebar";
-import { theme, debugOutline } from "./theme.css.ts";
-import "./App.css";
+import { Box } from "@radix-ui/themes";
+import clsx from "clsx";
+import React, { useState } from "react";
+import Sidebar from "./components/ui/Sidebar.jsx";
+import { layoutContainer } from "./layout.css";
+import { theme } from "./theme.css.ts";
 
 export default function Layout({ children }) {
-	const [isSidebarVisible, setIsSidebarVisible] = useState(window.innerWidth > 768);
-	const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
-
-	// Add a listener for screen size changes
-	useEffect(() => {
-		const handleResize = () => {
-			const mobile = window.innerWidth <= 768;
-			setIsMobileView(mobile);
-			
-			// On desktop, sidebar is always visible by default
-			if (!mobile && !isSidebarVisible) {
-				setIsSidebarVisible(true);
-			}
-		};
-
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
-	}, [isSidebarVisible]);
+	const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
 	const toggleSidebar = () => {
 		setIsSidebarVisible(!isSidebarVisible);
 	};
 
 	return (
-		<div
-			className={`${theme} mainBg`}
-			style={{ backgroundColor: 'var(--colors-background)' }}
+		<Box
+			className={clsx(theme, layoutContainer)}
+			height="100vh"
+			overflow="hidden"
+			position="relative"
+			p="4"
 		>
 			{/* Decorative elements */}
 			<div
@@ -43,12 +31,13 @@ export default function Layout({ children }) {
 					width: "300px",
 					height: "300px",
 					borderRadius: "50%",
-					background: "radial-gradient(circle at 30% 30%, rgba(135, 94, 255, 0.2), rgba(31, 17, 56, 0))",
+					background:
+						"radial-gradient(circle at 30% 30%, rgba(135, 94, 255, 0.6), rgba(31, 17, 56, 0.1))",
 					filter: "blur(40px)",
 					zIndex: "-1",
 				}}
 			/>
-			
+
 			<div
 				className="decorative-square"
 				style={{
@@ -57,42 +46,61 @@ export default function Layout({ children }) {
 					left: "15%",
 					width: "200px",
 					height: "200px",
-					background: "linear-gradient(135deg, rgba(100, 43, 115, 0.1), rgba(0, 212, 255, 0.05))",
+					background:
+						"linear-gradient(135deg, rgba(100, 43, 115, 0.6), rgba(0, 212, 255, 0.1))",
 					transform: "rotate(45deg)",
 					filter: "blur(30px)",
 					zIndex: "-1",
 				}}
 			/>
-			
-			{/* Content container for proper layout */}
-			<div className="content-container">
+			{/* Content container using Box with Flex properties */}
+			<Box display="flex" width="100%" height="100%">
 				{/* Sidebar toggle button */}
-				<div 
-					className="sidebar-toggle" 
+				<Box
+					className="sidebar-toggle"
 					onClick={toggleSidebar}
-					style={{ 
-						left: isMobileView ? "20px" : (isSidebarVisible ? "300px" : "20px"),
-					}}
+					position="fixed"
+					top="20px"
+					left={{ initial: "20px", sm: isSidebarVisible ? "300px" : "20px" }}
+					style={{ zIndex: 1000 }}
 				>
 					<HamburgerMenuIcon />
-				</div>
-				
+				</Box>
+
 				{/* Overlay for mobile - only visible when sidebar is open */}
-				<div 
-					className={`sidebar-overlay ${isSidebarVisible && isMobileView ? 'visible' : ''}`} 
+				<Box
+					className={`sidebar-overlay ${isSidebarVisible ? "visible" : ""}`}
 					onClick={toggleSidebar}
+					display={{
+						initial: isSidebarVisible ? "block" : "none",
+						sm: "none",
+					}}
 				/>
-				
-				{/* Sidebar component */}
-				<Sidebar isVisible={isSidebarVisible} onToggleVisibility={toggleSidebar} />
-				
-				{/* Main content area */}
-				<main style={{ 
-					backgroundColor: 'var(--colors-background)',
-					marginLeft: isMobileView ? 0 : (isSidebarVisible ? '280px' : 0)
-				}}>
+
+				{/* Sidebar component - Conditionally render */}
+				{isSidebarVisible && (
+					<Sidebar
+						isVisible={isSidebarVisible}
+						onToggleVisibility={toggleSidebar}
+					/>
+				)}
+
+				{/* Main content area using Box */}
+				<Box
+					as="main"
+					flexGrow="1"
+					overflowY="auto"
+					pl={{ initial: "3", sm: "5" }}
+					pr={{ initial: "3", sm: "5" }}
+					pt={{ initial: "6", sm: "5" }}
+					pb={{ initial: "3", sm: "5" }}
+					ml={{ initial: "0", sm: isSidebarVisible ? "280px" : "0" }}
+					style={{
+						transition: "margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+					}}
+				>
 					{children}
-					
+
 					{/* Decorative grid - subtle lines in the background */}
 					<div
 						style={{
@@ -110,8 +118,8 @@ export default function Layout({ children }) {
 							zIndex: -1,
 						}}
 					/>
-				</main>
-			</div>
-		</div>
+				</Box>
+			</Box>
+		</Box>
 	);
 }
