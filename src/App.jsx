@@ -13,6 +13,7 @@ import { SineCosineInteractive } from "./components/pages/SineCosineInteractive.
 import { TangentExplorer } from "./components/pages/TangentExplorer.jsx";
 import { UnitCircle } from "./components/pages/UnitCircle.jsx";
 import { VectorAddition } from "./components/pages/VectorAddition.jsx";
+import { VectorDotProduct } from "./components/pages/VectorDotProduct.jsx";
 import { VectorOperations } from "./components/pages/VectorOperations.jsx";
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
 					{/* Linear Algebra */}
 					<Route path="vector-addition" element={<VectorAddition />} />
 					<Route path="vector-operations" element={<VectorOperations />} />
+					<Route path="vector-dot-product" element={<VectorDotProduct />} />
 					{/* Demos & Utilities */}
 					<Route path="p5-demo" element={<P5Demo />} />
 					<Route path="mafs-hello" element={<MafsHello />} />
