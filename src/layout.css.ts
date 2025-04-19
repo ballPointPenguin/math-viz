@@ -7,6 +7,14 @@ export const layoutContainer = style({
 
 export const mainContent = style({});
 
+export const mainContentWrapper = style({
+	marginLeft: "auto",
+	marginRight: "auto",
+	height: "100%",
+	width: "100%",
+	display: "block",
+});
+
 // Overlay styles (kept separate as it's conditionally rendered in Layout)
 export const sidebarOverlay = style({
 	position: "fixed",

@@ -49,18 +49,20 @@ export default function Layout({ children }) {
 				/>
 
 				{/* Main content area using Box */}
-				<Box
-					as="main"
-					className={styles.mainContent}
-					height="100%"
-					flexGrow="1"
-					overflowY="auto"
-					pl={{ initial: "3", sm: "5" }}
-					pr={{ initial: "3", sm: "5" }}
-					pt={{ initial: "7", sm: "5" }}
-					pb={{ initial: "3", sm: "5" }}
-				>
-					{children}
+				<Box className={styles.mainContentWrapper}>
+					<Box
+						as="main"
+						className={styles.mainContent}
+						height="100%"
+						flexGrow="1"
+						overflowY="auto"
+						pl={{ initial: "3", sm: "5" }}
+						pr={{ initial: "3", sm: "5" }}
+						pt={{ initial: "7", sm: "5" }}
+						pb={{ initial: "3", sm: "5" }}
+					>
+						{children}
+					</Box>
 				</Box>
 			</Box>
 		</Box>

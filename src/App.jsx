@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./Layout.jsx";
 import Home from "./components/Home.tsx";
-import CosineDotProduct from "./components/pages/CosineDotProduct.jsx";
 import { MafsHello } from "./components/pages/MafsHello.jsx";
 import { MafsTrigFunctions } from "./components/pages/MafsTrigFunctions.jsx";
 import { MafsUnitCircleSine } from "./components/pages/MafsUnitCircleSine.jsx";
@@ -42,7 +41,6 @@ function App() {
 					{/* Linear Algebra */}
 					<Route path="vector-addition" element={<VectorAddition />} />
 					<Route path="vector-operations" element={<VectorOperations />} />
-					<Route path="cosine-dot-product" element={<CosineDotProduct />} />
 					{/* Demos & Utilities */}
 					<Route path="p5-demo" element={<P5Demo />} />
 					<Route path="mafs-hello" element={<MafsHello />} />

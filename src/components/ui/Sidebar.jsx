@@ -27,7 +27,6 @@ const navigationData = [
 		links: [
 			{ to: "/vector-addition", label: "Vector Addition" },
 			{ to: "/vector-operations", label: "Vector Operations" },
-			{ to: "/cosine-dot-product", label: "Cosine & Dot Product" },
 		],
 	},
 	{
@@ -36,6 +35,7 @@ const navigationData = [
 		links: [
 			{ to: "/p5-demo", label: "P5 Demo" },
 			{ to: "/mafs-hello", label: "Mafs Hello" },
+			{ to: "/math-viz-demo", label: "Component Library" },
 		],
 	},
 ];
