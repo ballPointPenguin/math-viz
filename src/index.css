@@ -15,16 +15,12 @@
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
 }
 
 body {
-  background-color: #09090b; /* Fallback before theme loads */
-  color: #ffffff;
   transition: background-color 0.3s ease;
   position: relative;
 }
@@ -42,4 +38,41 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(163, 119, 255, 0.6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 71, 238, 0.8);
+}
+
+/* Decorative element animation */
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(10px) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
 }

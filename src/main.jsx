@@ -11,7 +11,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 		<Theme
 			appearance="dark"
 			accentColor="purple"
+			hasBackground={false}
 			grayColor="mauve"
+			panelBackground="translucent"
 			radius="medium"
 			className={theme}
 		>

@@ -2,6 +2,7 @@ import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Box, IconButton } from "@radix-ui/themes";
 import clsx from "clsx";
 import React, { useState } from "react";
+import { DecorativeGrid } from "./components/ui/Decorative.jsx";
 import Sidebar from "./components/ui/Sidebar.jsx";
 import * as styles from "./layout.css";
 
@@ -15,13 +16,13 @@ export default function Layout({ children }) {
 
 	return (
 		<Box
-			className={clsx(styles.layoutContainer)}
-			height="100vh"
+			className={styles.layoutContainer}
+			height="100%"
 			overflow="hidden"
 			position="relative"
-			p="4"
+			p="5"
 		>
-			{/* Decorative elements */}
+			<DecorativeGrid />
 
 			{/* Content container using Box with Flex properties */}
 			<Box display="flex" width="100%" height="100%">
@@ -29,7 +30,7 @@ export default function Layout({ children }) {
 				<Sidebar isVisible={isSidebarVisible} />
 
 				{/* Wrapper Box for positioning the IconButton */}
-				<Box position="fixed" top="4" left="4" style={{ zIndex: 1000 }}>
+				<Box position="fixed" top="4" left="4" style={{ zIndex: 2 }}>
 					{/* Sidebar toggle button - IconButton */}
 					<IconButton
 						variant="outline"
@@ -42,7 +43,6 @@ export default function Layout({ children }) {
 					</IconButton>
 				</Box>
 
-				{/* Overlay for mobile - uses styles from layout.css.ts */}
 				<Box
 					className={clsx(styles.sidebarOverlay, isSidebarVisible && "visible")}
 					onClick={toggleSidebar}
@@ -51,6 +51,8 @@ export default function Layout({ children }) {
 				{/* Main content area using Box */}
 				<Box
 					as="main"
+					className={styles.mainContent}
+					height="100%"
 					flexGrow="1"
 					overflowY="auto"
 					pl={{ initial: "3", sm: "5" }}
