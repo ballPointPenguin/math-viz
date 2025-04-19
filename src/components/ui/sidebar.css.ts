@@ -73,16 +73,16 @@ export const trigger = style([
 export const triggerHoverFocus = style({
 	selectors: {
 		'&:hover:not([data-state="open"])': {
-			backgroundColor: "var(--gray-4)",
+			backgroundColor: vars.colors.gray4,
 		},
 		'&[data-state="open"]': {
-			backgroundColor: "var(--gray-5)",
+			backgroundColor: vars.colors.gray5,
 		},
 	},
 });
 
 export const caretDown = style({
-	color: "var(--gray-11)",
+	color: vars.colors.gray11,
 	transition: "transform 250ms ease",
 	selectors: {
 		[`${trigger}[data-state="open"] &`]: {
@@ -123,7 +123,7 @@ export const content = style([
 export const linkList = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: "var(--space-2)",
+	gap: vars.space[2],
 });
 
 const linkBase = style({
@@ -147,8 +147,8 @@ export const link = style([
 export const linkHover = style({
 	selectors: {
 		"&:hover": {
-			backgroundColor: "var(--gray-4)",
-			color: "var(--cyan-9)",
+			backgroundColor: vars.colors.gray4,
+			color: vars.colors.cyan9,
 		},
 	},
 });
@@ -166,8 +166,8 @@ export const linkHoverTransformDesktop = style({
 });
 
 export const activeLink = style({
-	backgroundColor: "var(--gray-5) !important",
-	color: "var(--plum-9) !important",
+	backgroundColor: `${vars.colors.gray5} !important`,
+	color: `${vars.colors.plum9} !important`,
 	fontWeight: "500",
 	selectors: {
 		[`&.${link}`]: {},

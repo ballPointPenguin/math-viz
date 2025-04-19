@@ -32,9 +32,9 @@ export const cardBox = style([
 		selectors: {
 			[`${cardLink}:hover &`]: {
 				transform: "translateY(-5px)",
-				boxShadow: "0 10px 20px rgba(0, 0, 0, 0.2)",
-				borderColor: "var(--gray-6)", // Use Radix var directly for hover
-				backgroundColor: "var(--gray-3)", // Use Radix var directly for hover
+				boxShadow: vars.shadows.lg, // Use theme shadow
+				borderColor: vars.colors.gray6, // Use VE vars
+				backgroundColor: vars.colors.gray3, // Use VE vars
 			},
 		},
 	},
@@ -54,8 +54,10 @@ export const iconBox = style([
 		selectors: {
 			[`${cardLink}:hover &`]: {
 				transform: "scale(1.1)",
-				color: "var(--plum-9)", // Use Radix var directly for hover
-				filter: "drop-shadow(0 0 8px rgba(163, 119, 255, 0.5))",
+				color: vars.colors.plum9, // Use VE vars
+				// Use a theme shadow instead of drop-shadow filter
+				// filter: `drop-shadow(0 0 8px ${vars.colors.purpleA6})`, // Incorrect alpha scale reference
+				boxShadow: vars.shadows.glow, // Apply glow shadow on icon hover
 			},
 		},
 	},
