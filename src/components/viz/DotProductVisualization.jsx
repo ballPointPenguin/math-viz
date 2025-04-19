@@ -10,120 +10,143 @@ import Vector from "./Vector";
 // Configure mathjs - using only number implementation for better performance
 const MATH = create(all);
 
-const DotProductSketch = ({
-	vectorA = { x: 100, y: 50 },
-	vectorB = { x: 80, y: 120 },
-	width = 400,
-	height = 400,
-	showProjection = true,
-	showComponents = true,
-	showAngle = true,
-	gridSize = 20,
-}) => {
-	return ({ p5 }) => {
-		// Setup the canvas
-		p5.setup = () => {
-			p5.createCanvas(width, height);
-		};
+/**
+ * A sketch to visualize dot products between vectors
+ *
+ * @param {Object} p5 - The p5 instance
+ * @param {Object} props - The props passed from the wrapper
+ */
+const sketch = (p5) => {
+	// Default values that will be overridden by props
+	let vectorA = { x: 100, y: 50 };
+	let vectorB = { x: 80, y: 120 };
+	let width = 400;
+	let height = 400;
+	let showProjection = true;
+	let showComponents = true;
+	let showAngle = true;
+	let gridSize = 20;
 
-		p5.draw = () => {
-			p5.background(30);
+	p5.setup = () => {
+		p5.createCanvas(width, height);
+	};
 
-			// Draw grid
-			p5.stroke(60);
+	p5.updateWithProps = (props) => {
+		// Update variables when props change
+		if (props.vectorA) vectorA = props.vectorA;
+		if (props.vectorB) vectorB = props.vectorB;
+		if (props.width) width = props.width;
+		if (props.height) height = props.height;
+		if (props.showProjection !== undefined)
+			showProjection = props.showProjection;
+		if (props.showComponents !== undefined)
+			showComponents = props.showComponents;
+		if (props.showAngle !== undefined) showAngle = props.showAngle;
+		if (props.gridSize) gridSize = props.gridSize;
+
+		// Resize the canvas if dimensions changed
+		if (p5.width !== width || p5.height !== height) {
+			p5.resizeCanvas(width, height);
+		}
+	};
+
+	p5.draw = () => {
+		p5.background(30);
+
+		// Draw grid
+		p5.stroke(60);
+		p5.strokeWeight(1);
+
+		// Draw grid lines
+		for (let x = 0; x <= width; x += gridSize) {
+			p5.line(x, 0, x, height);
+		}
+		for (let y = 0; y <= height; y += gridSize) {
+			p5.line(0, y, width, y);
+		}
+
+		// Center coordinate system
+		const originX = width / 2;
+		const originY = height / 2;
+
+		// Draw axes
+		p5.stroke(100);
+		p5.strokeWeight(2);
+		p5.line(0, originY, width, originY); // x-axis
+		p5.line(originX, 0, originX, height); // y-axis
+
+		// Origin
+		const origin = { x: originX, y: originY };
+
+		// Draw vectors
+		Vector({
+			p5,
+			vector: vectorA,
+			origin,
+			color: "#a377ff",
+			label: "A",
+			showComponents,
+		});
+
+		Vector({
+			p5,
+			vector: vectorB,
+			origin,
+			color: "#43ecff",
+			label: "B",
+			showComponents,
+		});
+
+		// Draw the projection if needed
+		if (showProjection) {
+			ScalarProjection({
+				p5,
+				vectorA,
+				vectorB,
+				origin,
+				showValue: true,
+				label: "proj",
+			});
+		}
+
+		// Calculate dot product
+		const dotProduct = vectorA.x * vectorB.x + vectorA.y * vectorB.y;
+
+		// Calculate magnitudes
+		const magA = Math.sqrt(vectorA.x * vectorA.x + vectorA.y * vectorA.y);
+		const magB = Math.sqrt(vectorB.x * vectorB.x + vectorB.y * vectorB.y);
+
+		// Calculate angle between vectors
+		const angle = Math.acos(dotProduct / (magA * magB));
+
+		// Display dot product and angle
+		p5.push();
+		p5.noStroke();
+		p5.fill(255);
+		p5.textSize(14);
+		p5.textAlign(p5.LEFT, p5.TOP);
+		p5.text(`Dot Product: ${dotProduct.toFixed(2)}`, 10, 10);
+		p5.text(`|A| = ${magA.toFixed(2)}`, 10, 30);
+		p5.text(`|B| = ${magB.toFixed(2)}`, 10, 50);
+
+		if (showAngle) {
+			p5.text(`Angle: ${((angle * 180) / Math.PI).toFixed(2)}°`, 10, 70);
+
+			// Draw the angle arc
+			p5.noFill();
+			p5.stroke("#ef47ee");
 			p5.strokeWeight(1);
-
-			// Draw grid lines
-			for (let x = 0; x <= width; x += gridSize) {
-				p5.line(x, 0, x, height);
-			}
-			for (let y = 0; y <= height; y += gridSize) {
-				p5.line(0, y, width, y);
-			}
-
-			// Center coordinate system
-			const originX = width / 2;
-			const originY = height / 2;
-
-			// Draw axes
-			p5.stroke(100);
-			p5.strokeWeight(2);
-			p5.line(0, originY, width, originY); // x-axis
-			p5.line(originX, 0, originX, height); // y-axis
-
-			// Origin
-			const origin = { x: originX, y: originY };
-
-			// Draw vectors
-			Vector({
-				p5,
-				vector: vectorA,
-				origin,
-				color: "#a377ff",
-				label: "A",
-				showComponents,
-			});
-
-			Vector({
-				p5,
-				vector: vectorB,
-				origin,
-				color: "#43ecff",
-				label: "B",
-				showComponents,
-			});
-
-			// Draw the projection if needed
-			if (showProjection) {
-				ScalarProjection({
-					p5,
-					vectorA,
-					vectorB,
-					origin,
-					showValue: true,
-					label: "proj",
-				});
-			}
-
-			// Calculate dot product
-			const dotProduct = vectorA.x * vectorB.x + vectorA.y * vectorB.y;
-
-			// Calculate magnitudes
-			const magA = Math.sqrt(vectorA.x * vectorA.x + vectorA.y * vectorA.y);
-			const magB = Math.sqrt(vectorB.x * vectorB.x + vectorB.y * vectorB.y);
-
-			// Calculate angle between vectors
-			const angle = Math.acos(dotProduct / (magA * magB));
-
-			// Display dot product and angle
-			p5.push();
-			p5.noStroke();
-			p5.fill(255);
-			p5.textSize(14);
-			p5.textAlign(p5.LEFT, p5.TOP);
-			p5.text(`Dot Product: ${dotProduct.toFixed(2)}`, 10, 10);
-			p5.text(`|A| = ${magA.toFixed(2)}`, 10, 30);
-			p5.text(`|B| = ${magB.toFixed(2)}`, 10, 50);
-
-			if (showAngle) {
-				p5.text(`Angle: ${((angle * 180) / Math.PI).toFixed(2)}°`, 10, 70);
-
-				// Draw the angle arc
-				p5.noFill();
-				p5.stroke("#ef47ee");
-				p5.strokeWeight(1);
-				const arcRadius = 30;
-				p5.arc(
-					origin.x,
-					origin.y,
-					arcRadius * 2,
-					arcRadius * 2,
-					Math.atan2(vectorA.y, vectorA.x),
-					Math.atan2(vectorB.y, vectorB.x),
-				);
-			}
-			p5.pop();
-		};
+			const arcRadius = 30;
+			p5.arc(
+				origin.x,
+				origin.y,
+				arcRadius * 2,
+				arcRadius * 2,
+				Math.atan2(vectorA.y, vectorA.x),
+				Math.atan2(vectorB.y, vectorB.x),
+			);
+		}
+		p5.pop();
 	};
 };
 
@@ -163,7 +186,7 @@ const DotProductVisualization = ({
 		<Flex direction="column" gap="3">
 			<Box height={height} width={width} className={styles.canvasContainer}>
 				<ReactP5Wrapper
-					sketch={DotProductSketch}
+					sketch={sketch}
 					vectorA={vectorA}
 					vectorB={vectorB}
 					width={width}

@@ -11,188 +11,210 @@ const MATH = create(all);
 
 /**
  * A sketch to visualize basis vectors and their linear combinations
+ *
+ * @param {Object} p5 - The p5 instance
+ * @param {Object} props - The props passed from the wrapper
  */
-const BasisSketch = ({
-	basis1 = { x: 1, y: 0 },
-	basis2 = { x: 0, y: 1 },
-	targetVector = { x: 2, y: 1.5 },
-	width = 400,
-	height = 400,
-	showCoordinates = true,
-	showGrid = true,
-	gridSize = 20,
-	scale = 40,
-	useStandardBasis = true,
-}) => {
-	return ({ p5 }) => {
-		// Setup the canvas
-		p5.setup = () => {
-			p5.createCanvas(width, height);
-		};
+const sketch = (p5) => {
+	// Default values that will be overridden by props
+	let basis1 = { x: 1, y: 0 };
+	let basis2 = { x: 0, y: 1 };
+	let targetVector = { x: 2, y: 1.5 };
+	let width = 400;
+	let height = 400;
+	let showCoordinates = true;
+	let showGrid = true;
+	let gridSize = 20;
+	let scale = 40;
+	let useStandardBasis = true;
 
-		p5.draw = () => {
-			p5.background(30);
+	p5.setup = () => {
+		p5.createCanvas(width, height);
+	};
 
-			// Center coordinate system
-			const originX = width / 2;
-			const originY = height / 2;
-			const origin = { x: originX, y: originY };
+	p5.updateWithProps = (props) => {
+		// Update variables when props change
+		if (props.basis1) basis1 = props.basis1;
+		if (props.basis2) basis2 = props.basis2;
+		if (props.targetVector) targetVector = props.targetVector;
+		if (props.width) width = props.width;
+		if (props.height) height = props.height;
+		if (props.showCoordinates !== undefined)
+			showCoordinates = props.showCoordinates;
+		if (props.showGrid !== undefined) showGrid = props.showGrid;
+		if (props.gridSize) gridSize = props.gridSize;
+		if (props.scale) scale = props.scale;
+		if (props.useStandardBasis !== undefined)
+			useStandardBasis = props.useStandardBasis;
 
-			// Draw grid
-			if (showGrid) {
-				p5.stroke(60);
-				p5.strokeWeight(1);
+		// Resize the canvas if dimensions changed
+		if (p5.width !== width || p5.height !== height) {
+			p5.resizeCanvas(width, height);
+		}
+	};
 
-				// Draw grid lines
-				for (let x = 0; x <= width; x += gridSize) {
-					p5.line(x, 0, x, height);
-				}
-				for (let y = 0; y <= height; y += gridSize) {
-					p5.line(0, y, width, y);
-				}
+	p5.draw = () => {
+		p5.background(30);
+
+		// Center coordinate system
+		const originX = width / 2;
+		const originY = height / 2;
+		const origin = { x: originX, y: originY };
+
+		// Draw grid
+		if (showGrid) {
+			p5.stroke(60);
+			p5.strokeWeight(1);
+
+			// Draw grid lines
+			for (let x = 0; x <= width; x += gridSize) {
+				p5.line(x, 0, x, height);
 			}
-
-			// Draw axes
-			p5.stroke(100);
-			p5.strokeWeight(2);
-			p5.line(0, originY, width, originY); // x-axis
-			p5.line(originX, 0, originX, height); // y-axis
-
-			// Scale the vectors for display
-			const scaledBasis1 = { x: basis1.x * scale, y: basis1.y * scale };
-			const scaledBasis2 = { x: basis2.x * scale, y: basis2.y * scale };
-
-			// Draw basis vectors
-			Vector({
-				p5,
-				vector: scaledBasis1,
-				origin,
-				color: "#FF6B6B",
-				label: "e₁",
-				showComponents: false,
-				strokeWeight: 3,
-			});
-
-			Vector({
-				p5,
-				vector: scaledBasis2,
-				origin,
-				color: "#4ECDC4",
-				label: "e₂",
-				showComponents: false,
-				strokeWeight: 3,
-			});
-
-			// Calculate coordinates in terms of the basis vectors
-			let coordinates;
-			let scaledTarget;
-
-			if (useStandardBasis) {
-				// Standard basis - just use the target vector components directly
-				coordinates = { x: targetVector.x, y: targetVector.y };
-				scaledTarget = {
-					x: targetVector.x * scale,
-					y: targetVector.y * scale,
-				};
-			} else {
-				// Non-standard basis - solve the linear system:
-				// targetVector = a * basis1 + b * basis2
-				// We need to solve for a and b
-
-				// Create the coefficient matrix [basis1.x, basis2.x; basis1.y, basis2.y]
-				const det = basis1.x * basis2.y - basis1.y * basis2.x;
-
-				if (Math.abs(det) < 1e-10) {
-					// Determinant is zero, basis vectors are linearly dependent
-					p5.fill(255, 0, 0);
-					p5.noStroke();
-					p5.textSize(16);
-					p5.text("Error: Basis vectors are linearly dependent!", 10, 30);
-					return;
-				}
-
-				// Solve for coordinates in this basis
-				const a = (targetVector.x * basis2.y - targetVector.y * basis2.x) / det;
-				const b = (basis1.x * targetVector.y - basis1.y * targetVector.x) / det;
-
-				coordinates = { x: a, y: b };
-
-				// Calculate the target vector as a linear combination of basis vectors
-				scaledTarget = {
-					x: a * scaledBasis1.x + b * scaledBasis2.x,
-					y: a * scaledBasis1.y + b * scaledBasis2.y,
-				};
+			for (let y = 0; y <= height; y += gridSize) {
+				p5.line(0, y, width, y);
 			}
+		}
 
-			// Draw the target vector
-			Vector({
-				p5,
-				vector: scaledTarget,
-				origin,
-				color: "#F3DE2C",
-				label: "v",
-				strokeWeight: 3,
-			});
+		// Draw axes
+		p5.stroke(100);
+		p5.strokeWeight(2);
+		p5.line(0, originY, width, originY); // x-axis
+		p5.line(originX, 0, originX, height); // y-axis
 
-			// Draw the decomposed vector components along basis vectors
-			if (!useStandardBasis) {
-				// First basis component
-				Vector({
-					p5,
-					vector: {
-						x: coordinates.x * scaledBasis1.x,
-						y: coordinates.x * scaledBasis1.y,
-					},
-					origin,
-					color: "#FF6B6B",
-					label: `${coordinates.x.toFixed(1)}e₁`,
-					strokeWeight: 2,
-					showComponents: false,
-				});
+		// Scale the vectors for display
+		const scaledBasis1 = { x: basis1.x * scale, y: basis1.y * scale };
+		const scaledBasis2 = { x: basis2.x * scale, y: basis2.y * scale };
 
-				// Second basis component (from the end of first component)
-				Vector({
-					p5,
-					vector: {
-						x: coordinates.y * scaledBasis2.x,
-						y: coordinates.y * scaledBasis2.y,
-					},
-					origin: {
-						x: origin.x + coordinates.x * scaledBasis1.x,
-						y: origin.y + coordinates.x * scaledBasis1.y,
-					},
-					color: "#4ECDC4",
-					label: `${coordinates.y.toFixed(1)}e₂`,
-					strokeWeight: 2,
-					showComponents: false,
-				});
-			}
+		// Draw basis vectors
+		Vector({
+			p5,
+			vector: scaledBasis1,
+			origin,
+			color: "#FF6B6B",
+			label: "e₁",
+			showComponents: false,
+			strokeWeight: 3,
+		});
 
-			// Display the coordinates
-			if (showCoordinates) {
-				p5.push();
-				p5.fill(255);
+		Vector({
+			p5,
+			vector: scaledBasis2,
+			origin,
+			color: "#4ECDC4",
+			label: "e₂",
+			showComponents: false,
+			strokeWeight: 3,
+		});
+
+		// Calculate coordinates in terms of the basis vectors
+		let coordinates;
+		let scaledTarget;
+
+		if (useStandardBasis) {
+			// Standard basis - just use the target vector components directly
+			coordinates = { x: targetVector.x, y: targetVector.y };
+			scaledTarget = {
+				x: targetVector.x * scale,
+				y: targetVector.y * scale,
+			};
+		} else {
+			// Non-standard basis - solve the linear system:
+			// targetVector = a * basis1 + b * basis2
+			// We need to solve for a and b
+
+			// Create the coefficient matrix [basis1.x, basis2.x; basis1.y, basis2.y]
+			const det = basis1.x * basis2.y - basis1.y * basis2.x;
+
+			if (Math.abs(det) < 1e-10) {
+				// Determinant is zero, basis vectors are linearly dependent
+				p5.fill(255, 0, 0);
 				p5.noStroke();
 				p5.textSize(16);
-
-				if (useStandardBasis) {
-					p5.text(
-						`v = (${targetVector.x.toFixed(1)}, ${targetVector.y.toFixed(1)})`,
-						10,
-						30,
-					);
-				} else {
-					const basisText = `v = ${coordinates.x.toFixed(1)}e₁ + ${coordinates.y.toFixed(1)}e₂`;
-					p5.text(basisText, 10, 30);
-					p5.text(
-						`Where: e₁ = (${basis1.x.toFixed(1)}, ${basis1.y.toFixed(1)}), e₂ = (${basis2.x.toFixed(1)}, ${basis2.y.toFixed(1)})`,
-						10,
-						55,
-					);
-				}
-				p5.pop();
+				p5.text("Error: Basis vectors are linearly dependent!", 10, 30);
+				return;
 			}
-		};
+
+			// Solve for coordinates in this basis
+			const a = (targetVector.x * basis2.y - targetVector.y * basis2.x) / det;
+			const b = (basis1.x * targetVector.y - basis1.y * targetVector.x) / det;
+
+			coordinates = { x: a, y: b };
+
+			// Calculate the target vector as a linear combination of basis vectors
+			scaledTarget = {
+				x: a * scaledBasis1.x + b * scaledBasis2.x,
+				y: a * scaledBasis1.y + b * scaledBasis2.y,
+			};
+		}
+
+		// Draw the target vector
+		Vector({
+			p5,
+			vector: scaledTarget,
+			origin,
+			color: "#F3DE2C",
+			label: "v",
+			strokeWeight: 3,
+		});
+
+		// Draw the decomposed vector components along basis vectors
+		if (!useStandardBasis) {
+			// First basis component
+			Vector({
+				p5,
+				vector: {
+					x: coordinates.x * scaledBasis1.x,
+					y: coordinates.x * scaledBasis1.y,
+				},
+				origin,
+				color: "#FF6B6B",
+				label: `${coordinates.x.toFixed(1)}e₁`,
+				strokeWeight: 2,
+				showComponents: false,
+			});
+
+			// Second basis component (from the end of first component)
+			Vector({
+				p5,
+				vector: {
+					x: coordinates.y * scaledBasis2.x,
+					y: coordinates.y * scaledBasis2.y,
+				},
+				origin: {
+					x: origin.x + coordinates.x * scaledBasis1.x,
+					y: origin.y + coordinates.x * scaledBasis1.y,
+				},
+				color: "#4ECDC4",
+				label: `${coordinates.y.toFixed(1)}e₂`,
+				strokeWeight: 2,
+				showComponents: false,
+			});
+		}
+
+		// Display the coordinates
+		if (showCoordinates) {
+			p5.push();
+			p5.fill(255);
+			p5.noStroke();
+			p5.textSize(16);
+
+			if (useStandardBasis) {
+				p5.text(
+					`v = (${targetVector.x.toFixed(1)}, ${targetVector.y.toFixed(1)})`,
+					10,
+					30,
+				);
+			} else {
+				const basisText = `v = ${coordinates.x.toFixed(1)}e₁ + ${coordinates.y.toFixed(1)}e₂`;
+				p5.text(basisText, 10, 30);
+				p5.text(
+					`Where: e₁ = (${basis1.x.toFixed(1)}, ${basis1.y.toFixed(1)}), e₂ = (${basis2.x.toFixed(1)}, ${basis2.y.toFixed(1)})`,
+					10,
+					55,
+				);
+			}
+			p5.pop();
+		}
 	};
 };
 
@@ -251,7 +273,7 @@ const BasisVisualization = ({
 		<Flex direction="column" gap="3">
 			<Box height={height} width={width} className={styles.canvasContainer}>
 				<ReactP5Wrapper
-					sketch={BasisSketch}
+					sketch={sketch}
 					basis1={basis1}
 					basis2={basis2}
 					targetVector={targetVector}

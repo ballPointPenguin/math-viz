@@ -1,4 +1,3 @@
-import { P5Instance } from "@p5-wrapper/react";
 import { Box } from "@radix-ui/themes";
 import React from "react";
 
@@ -6,7 +5,7 @@ import React from "react";
  * A reusable vector component for drawing/visualizing vectors
  *
  * @param {Object} props
- * @param {P5Instance} props.p5 - The p5 instance
+ * @param {Object} props.p5 - The p5 instance
  * @param {Object} props.vector - The vector to draw {x, y}
  * @param {Object} props.origin - The origin point {x, y} (default: {x: 0, y: 0})
  * @param {string} props.color - The color of the vector
@@ -15,7 +14,6 @@ import React from "react";
  * @param {boolean} props.showComponents - Whether to show x/y components
  * @param {string} props.label - Optional label for the vector
  * @param {string} props.componentsColor - Color for component lines (if shown)
- * @param {Object} props.labelStyle - Additional styling for the label
  */
 const Vector = ({
 	p5,
@@ -27,7 +25,6 @@ const Vector = ({
 	showComponents = false,
 	label = "",
 	componentsColor = "#43ecff",
-	labelStyle = {},
 }) => {
 	if (!p5 || !vector) return null;
 
@@ -55,14 +52,14 @@ const Vector = ({
 
 	// Draw components if needed
 	if (showComponents) {
-		p5.stroke(componentsColor);
-		p5.strokeWeight(1);
-		p5.setLineDash([5, 5]);
+		const componentColor = p5.color(componentsColor);
+		componentColor.setAlpha(150);
+		p5.stroke(componentColor);
+		p5.strokeWeight(0.5);
 		// X component
 		p5.line(origin.x, origin.y, endX, origin.y);
 		// Y component
 		p5.line(endX, origin.y, endX, endY);
-		p5.setLineDash([]);
 	}
 
 	// Draw label if provided

@@ -1,11 +1,10 @@
-import { P5Instance } from "@p5-wrapper/react";
 import React from "react";
 
 /**
  * Visualizes the scalar projection of one vector onto another
  *
  * @param {Object} props
- * @param {P5Instance} props.p5 - The p5 instance
+ * @param {Object} props.p5 - The p5 instance
  * @param {Object} props.vectorA - The first vector {x, y}
  * @param {Object} props.vectorB - The second vector (to project onto) {x, y}
  * @param {Object} props.origin - The origin point {x, y} (default: {x: 0, y: 0})
@@ -55,12 +54,12 @@ const ScalarProjection = ({
 	const perpEndX = origin.x + vectorA.x;
 	const perpEndY = origin.y + vectorA.y;
 
-	// Draw perpendicular line as dashed
-	p5.stroke(projectionColor);
-	p5.strokeWeight(1);
-	p5.setLineDash([5, 5]);
+	// Draw perpendicular line with visual differentiation
+	const perpLineColor = p5.color(projectionColor);
+	perpLineColor.setAlpha(150);
+	p5.stroke(perpLineColor);
+	p5.strokeWeight(0.5);
 	p5.line(projEndX, projEndY, perpEndX, perpEndY);
-	p5.setLineDash([]);
 
 	// Show the scalar projection value
 	if (showValue) {

@@ -28,7 +28,7 @@ const MathFormula = ({ formula, display = false, color, boxProps = {} }) => {
 		<Box
 			ref={containerRef}
 			display="inline-block"
-			style={{ overflow: "auto" }}
+			style={{ overflow: "auto", width: "100%" }}
 			color={color}
 			{...boxProps}
 		/>

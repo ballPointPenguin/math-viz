@@ -27,6 +27,8 @@ const navigationData = [
 		links: [
 			{ to: "/vector-addition", label: "Vector Addition" },
 			{ to: "/vector-operations", label: "Vector Operations" },
+			{ to: "/vector-dot-product", label: "Vector Dot Product" },
+			{ to: "/vector-basis", label: "Vector Basis" },
 		],
 	},
 	{
