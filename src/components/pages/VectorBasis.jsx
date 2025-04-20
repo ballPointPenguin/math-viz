@@ -228,6 +228,61 @@ export const VectorBasis = () => {
 										))}
 									</Box>
 								</Card>
+
+								<Card mt="4">
+									<Heading size="5" mb="2">
+										Key to Math Symbols
+									</Heading>
+									<Box style={{ lineHeight: 1.5 }}>
+										<Text as="p" mb="2">
+											ℝ: The set of all real numbers
+										</Text>
+										<Text as="p" mb="2">
+											ℝ²: 2-dimensional real space (vectors with 2 components)
+										</Text>
+										<Text as="p" mb="2">
+											ℝⁿ: n-dimensional real space
+										</Text>
+										<Text as="p" mb="2">
+											⇒: Implies or "therefore"
+										</Text>
+										<Text as="p" mb="2">
+											⇔: "if and only if"
+										</Text>
+										<Text as="p" mb="2">
+											∀: "For all" or "for every"
+										</Text>
+										<Text as="p" mb="2">
+											&#123;&#125;: Set notation, defining a collection of
+											elements
+										</Text>
+										<Text as="p" mb="2">
+											∈: "Element of" or "belongs to" (e.g., v ∈ ℝ²)
+										</Text>
+										<Text as="p" mb="2">
+											⊥: Perpendicular or orthogonal
+										</Text>
+										<Text as="p" mb="2">
+											⊆: "Subset of"
+										</Text>
+										<Text as="p" mb="2">
+											span&#123;v₁,v₂,...&#125;: The span of vectors (all linear
+											combinations)
+										</Text>
+										<Text as="p" mb="2">
+											〈v,w〉: Inner product of vectors v and w
+										</Text>
+										<Text as="p" mb="2">
+											‖v‖: Norm or length of vector v
+										</Text>
+										<Text as="p" mb="2">
+											→: Vector arrow notation
+										</Text>
+										<Text as="p" mb="2">
+											v̂: Unit vector (normalized to length 1)
+										</Text>
+									</Box>
+								</Card>
 							</Box>
 						</Grid>
 					</Tabs.Content>

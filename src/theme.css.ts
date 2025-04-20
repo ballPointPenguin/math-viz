@@ -3,8 +3,10 @@ import {
 	blueDark,
 	cyanDark,
 	grayDark,
+	grayDarkA,
 	indigoDark,
 	mauveDark,
+	mauveDarkA,
 	plumDark,
 	purpleDark,
 	tealDark,
@@ -22,16 +24,18 @@ export const debugOutline = style({
 export const [theme, vars] = createTheme({
 	colors: {
 		// Spread all the desired Radix dark scales
-		...grayDark,
+		...blackA,
 		...blueDark,
 		...cyanDark,
+		...grayDark,
+		...grayDarkA,
 		...indigoDark,
+		...mauveDark,
+		...mauveDarkA,
 		...plumDark,
 		...purpleDark,
 		...tealDark,
 		...violetDark,
-		...mauveDark,
-		...blackA,
 		...whiteA,
 
 		// --- Semantic Aliases ---
@@ -42,6 +46,9 @@ export const [theme, vars] = createTheme({
 		backgroundAlt: grayDark.gray3,
 		text: grayDark.gray12,
 		textMuted: grayDark.gray11,
+
+		// Panel backgrounds
+		panelTranslucent: mauveDarkA.mauveA1, // Using mauve-a1 instead of mauve-a2 for translucent panels
 
 		// Primary (Vaporwave)
 		primary: purpleDark.purple9,
@@ -108,6 +115,13 @@ globalStyle("body", {
 	fontFamily: vars.fonts.body,
 	backgroundColor: vars.colors.background,
 	color: vars.colors.text,
+});
+
+// Override Radix panel background colors
+globalStyle(".radix-themes.dark", {
+	vars: {
+		"--color-panel-translucent": vars.colors.panelTranslucent,
+	},
 });
 
 globalStyle("#root", {
