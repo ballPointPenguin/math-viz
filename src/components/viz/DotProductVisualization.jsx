@@ -18,14 +18,15 @@ const MATH = create(all);
  */
 const sketch = (p5) => {
 	// Default values that will be overridden by props
-	let vectorA = { x: 100, y: 50 };
-	let vectorB = { x: 80, y: 120 };
+	let vectorA = { x: 5, y: 3 };
+	let vectorB = { x: 4, y: 6 };
 	let width = 400;
 	let height = 400;
 	let showProjection = true;
 	let showComponents = true;
 	let showAngle = true;
 	let gridSize = 20;
+	let scale = 20; // Scale factor for vector display
 
 	p5.setup = () => {
 		p5.createCanvas(width, height);
@@ -43,6 +44,7 @@ const sketch = (p5) => {
 			showComponents = props.showComponents;
 		if (props.showAngle !== undefined) showAngle = props.showAngle;
 		if (props.gridSize) gridSize = props.gridSize;
+		if (props.scale) scale = props.scale;
 
 		// Resize the canvas if dimensions changed
 		if (p5.width !== width || p5.height !== height) {
@@ -53,35 +55,57 @@ const sketch = (p5) => {
 	p5.draw = () => {
 		p5.background(30);
 
+		// Center coordinate system
+		const originX = width / 2;
+		const originY = height / 2;
+		const origin = { x: originX, y: originY };
+
 		// Draw grid
 		p5.stroke(60);
 		p5.strokeWeight(1);
 
+		// Calculate grid intervals based on gridSize
 		// Draw grid lines
-		for (let x = 0; x <= width; x += gridSize) {
-			p5.line(x, 0, x, height);
-		}
-		for (let y = 0; y <= height; y += gridSize) {
-			p5.line(0, y, width, y);
+		// Vertical grid lines (including the axes)
+		for (let i = 0; i <= Math.max(width, height); i += gridSize) {
+			// Lines to the right of origin
+			if (originX + i <= width) {
+				p5.line(originX + i, 0, originX + i, height);
+			}
+			// Lines to the left of origin
+			if (originX - i >= 0 && i > 0) {
+				// Skip duplicate at origin
+				p5.line(originX - i, 0, originX - i, height);
+			}
 		}
 
-		// Center coordinate system
-		const originX = width / 2;
-		const originY = height / 2;
+		// Horizontal grid lines (including the axes)
+		for (let i = 0; i <= Math.max(width, height); i += gridSize) {
+			// Lines below origin
+			if (originY + i <= height) {
+				p5.line(0, originY + i, width, originY + i);
+			}
+			// Lines above origin
+			if (originY - i >= 0 && i > 0) {
+				// Skip duplicate at origin
+				p5.line(0, originY - i, width, originY - i);
+			}
+		}
 
-		// Draw axes
+		// Draw axes with higher contrast
 		p5.stroke(100);
 		p5.strokeWeight(2);
 		p5.line(0, originY, width, originY); // x-axis
 		p5.line(originX, 0, originX, height); // y-axis
 
-		// Origin
-		const origin = { x: originX, y: originY };
+		// Scale the vectors and negate y-coordinates for proper display (positive y is up)
+		const scaledVectorA = { x: vectorA.x * scale, y: -vectorA.y * scale };
+		const scaledVectorB = { x: vectorB.x * scale, y: -vectorB.y * scale };
 
 		// Draw vectors
 		Vector({
 			p5,
-			vector: vectorA,
+			vector: scaledVectorA,
 			origin,
 			color: "#a377ff",
 			label: "A",
@@ -90,7 +114,7 @@ const sketch = (p5) => {
 
 		Vector({
 			p5,
-			vector: vectorB,
+			vector: scaledVectorB,
 			origin,
 			color: "#43ecff",
 			label: "B",
@@ -101,15 +125,15 @@ const sketch = (p5) => {
 		if (showProjection) {
 			ScalarProjection({
 				p5,
-				vectorA,
-				vectorB,
+				vectorA: scaledVectorA,
+				vectorB: scaledVectorB,
 				origin,
 				showValue: true,
 				label: "proj",
 			});
 		}
 
-		// Calculate dot product
+		// Calculate dot product (using original vectors)
 		const dotProduct = vectorA.x * vectorB.x + vectorA.y * vectorB.y;
 
 		// Calculate magnitudes
@@ -154,8 +178,8 @@ const sketch = (p5) => {
  * An interactive visualization for vector dot products
  */
 const DotProductVisualization = ({
-	initialVectorA = { x: 100, y: 50 },
-	initialVectorB = { x: 80, y: 120 },
+	initialVectorA = { x: 5, y: 3 },
+	initialVectorB = { x: 4, y: 6 },
 	width = 400,
 	height = 400,
 	interactive = true,
@@ -207,9 +231,9 @@ const DotProductVisualization = ({
 							<Text size="1">x:</Text>
 							<Slider
 								defaultValue={[initialVectorA.x]}
-								min={-200}
-								max={200}
-								step={1}
+								min={-10}
+								max={10}
+								step={0.5}
 								value={[vectorA.x]}
 								onValueChange={([value]) => handleVectorAChange("x", value)}
 							/>
@@ -221,9 +245,9 @@ const DotProductVisualization = ({
 							<Text size="1">y:</Text>
 							<Slider
 								defaultValue={[initialVectorA.y]}
-								min={-200}
-								max={200}
-								step={1}
+								min={-10}
+								max={10}
+								step={0.5}
 								value={[vectorA.y]}
 								onValueChange={([value]) => handleVectorAChange("y", value)}
 							/>
@@ -241,9 +265,9 @@ const DotProductVisualization = ({
 							<Text size="1">x:</Text>
 							<Slider
 								defaultValue={[initialVectorB.x]}
-								min={-200}
-								max={200}
-								step={1}
+								min={-10}
+								max={10}
+								step={0.5}
 								value={[vectorB.x]}
 								onValueChange={([value]) => handleVectorBChange("x", value)}
 							/>
@@ -255,9 +279,9 @@ const DotProductVisualization = ({
 							<Text size="1">y:</Text>
 							<Slider
 								defaultValue={[initialVectorB.y]}
-								min={-200}
-								max={200}
-								step={1}
+								min={-10}
+								max={10}
+								step={0.5}
 								value={[vectorB.y]}
 								onValueChange={([value]) => handleVectorBChange("y", value)}
 							/>
