@@ -1,17 +1,12 @@
 import { ReactP5Wrapper } from "@p5-wrapper/react";
-import {
-	MagnifyingGlassIcon,
-	MinusIcon,
-	PlusIcon,
-	ResetIcon,
-} from "@radix-ui/react-icons";
-import { Box, Button, Flex, Slider, Text } from "@radix-ui/themes";
-import React, { useEffect, useRef } from "react";
+import { MinusIcon, PlusIcon, ResetIcon } from "@radix-ui/react-icons";
+import { Box, Button, Flex, Text } from "@radix-ui/themes";
+import React, { useRef } from "react";
 
 // Customizable grid component with dark academia + vaporwave aesthetic
 export const CoordinateGrid = ({
 	width = 600,
-	height = 400,
+	height = 600,
 	backgroundColor = "#121212",
 	gridColor = "rgba(163, 119, 255, 0.2)",
 	accentColor = "rgba(255, 105, 180, 0.8)",
@@ -28,32 +23,18 @@ export const CoordinateGrid = ({
 	axisLabels = { x: "x", y: "y" },
 	onPointSelect = null,
 }) => {
-	const canvasRef = useRef(null);
-	const containerRef = useRef(null);
 	const zoomRef = useRef(initialZoom);
 	const panRef = useRef({ x: 0, y: 0 });
 	const draggingRef = useRef(false);
 	const lastMousePosRef = useRef({ x: 0, y: 0 });
 
 	const sketch = (p) => {
+		console.log("sketch", { width, height });
 		// Setup the canvas
 		p.setup = () => {
 			const canvas = p.createCanvas(width, height);
-			canvas.parent(canvasRef.current);
-
 			if (interactive) {
-				// Add event listeners for interaction
-				canvas.mouseWheel((e) => {
-					const zoom = zoomRef.current;
-					const newZoom = p.constrain(
-						zoom - e.deltaY * 0.001,
-						minZoom,
-						maxZoom,
-					);
-					zoomRef.current = newZoom;
-					return false; // Prevent default behavior
-				});
-
+				// Scroll-wheel zoom removed; zoom only via buttons
 				canvas.mousePressed(() => {
 					if (
 						p.mouseX > 0 &&
@@ -235,24 +216,19 @@ export const CoordinateGrid = ({
 
 	return (
 		<Box
-			ref={containerRef}
 			style={{
 				width: fullWidth ? "100%" : width,
 				background: "rgba(0, 0, 0, 0.2)",
 				borderRadius: "8px",
-				overflow: "hidden",
 				boxShadow: "0 4px 30px rgba(135, 94, 255, 0.15)",
 				border: "1px solid rgba(255, 255, 255, 0.1)",
 				backdropFilter: "blur(10px)",
 			}}
 		>
-			<div
-				ref={canvasRef}
-				style={{
-					width: "100%",
-					height,
-				}}
-			/>
+			{/* Canvas container */}
+			<Box style={{ width: width, height: height, overflow: "hidden" }}>
+				<ReactP5Wrapper sketch={sketch} />
+			</Box>
 
 			{showZoomControls && (
 				<Flex
@@ -262,6 +238,7 @@ export const CoordinateGrid = ({
 					style={{
 						background: "rgba(18, 18, 18, 0.8)",
 						borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+						width: fullWidth ? "100%" : width,
 					}}
 				>
 					<Flex align="center" gap="2">
