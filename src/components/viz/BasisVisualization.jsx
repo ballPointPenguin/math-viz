@@ -24,7 +24,6 @@ const sketch = (p5) => {
 	let height = 400;
 	let showCoordinates = true;
 	let showGrid = true;
-	let gridSize = 20;
 	let scale = 40;
 	let useStandardBasis = true;
 
@@ -42,7 +41,6 @@ const sketch = (p5) => {
 		if (props.showCoordinates !== undefined)
 			showCoordinates = props.showCoordinates;
 		if (props.showGrid !== undefined) showGrid = props.showGrid;
-		if (props.gridSize) gridSize = props.gridSize;
 		if (props.scale) scale = props.scale;
 		if (props.useStandardBasis !== undefined)
 			useStandardBasis = props.useStandardBasis;
@@ -66,24 +64,46 @@ const sketch = (p5) => {
 			p5.stroke(60);
 			p5.strokeWeight(1);
 
-			// Draw grid lines
-			for (let x = 0; x <= width; x += gridSize) {
-				p5.line(x, 0, x, height);
+			// Calculate grid intervals based on scale
+			const gridInterval = scale / 2; // Half the scale makes for good grid density
+
+			// Start from origin and draw in all directions
+			// Vertical grid lines (including the axes)
+			for (let i = 0; i <= Math.max(width, height); i += gridInterval) {
+				// Lines to the right of origin
+				if (originX + i <= width) {
+					p5.line(originX + i, 0, originX + i, height);
+				}
+				// Lines to the left of origin
+				if (originX - i >= 0 && i > 0) {
+					// Skip duplicate at origin
+					p5.line(originX - i, 0, originX - i, height);
+				}
 			}
-			for (let y = 0; y <= height; y += gridSize) {
-				p5.line(0, y, width, y);
+
+			// Horizontal grid lines (including the axes)
+			for (let i = 0; i <= Math.max(width, height); i += gridInterval) {
+				// Lines below origin
+				if (originY + i <= height) {
+					p5.line(0, originY + i, width, originY + i);
+				}
+				// Lines above origin
+				if (originY - i >= 0 && i > 0) {
+					// Skip duplicate at origin
+					p5.line(0, originY - i, width, originY - i);
+				}
 			}
 		}
 
-		// Draw axes
-		p5.stroke(100);
+		// Draw axes with higher contrast
+		p5.stroke(120);
 		p5.strokeWeight(2);
 		p5.line(0, originY, width, originY); // x-axis
 		p5.line(originX, 0, originX, height); // y-axis
 
 		// Scale the vectors for display
-		const scaledBasis1 = { x: basis1.x * scale, y: basis1.y * scale };
-		const scaledBasis2 = { x: basis2.x * scale, y: basis2.y * scale };
+		const scaledBasis1 = { x: basis1.x * scale, y: -basis1.y * scale };
+		const scaledBasis2 = { x: basis2.x * scale, y: -basis2.y * scale };
 
 		// Draw basis vectors
 		Vector({
@@ -115,7 +135,7 @@ const sketch = (p5) => {
 			coordinates = { x: targetVector.x, y: targetVector.y };
 			scaledTarget = {
 				x: targetVector.x * scale,
-				y: targetVector.y * scale,
+				y: -targetVector.y * scale,
 			};
 		} else {
 			// Non-standard basis - solve the linear system:
@@ -402,8 +422,8 @@ const BasisVisualization = ({
 							<Text size="1">x:</Text>
 							<Slider
 								defaultValue={[initialTargetVector.x]}
-								min={-4}
-								max={4}
+								min={-6}
+								max={6}
 								step={0.1}
 								value={[targetVector.x]}
 								onValueChange={([value]) => handleTargetChange("x", value)}
@@ -416,8 +436,8 @@ const BasisVisualization = ({
 							<Text size="1">y:</Text>
 							<Slider
 								defaultValue={[initialTargetVector.y]}
-								min={-4}
-								max={4}
+								min={-6}
+								max={6}
 								step={0.1}
 								value={[targetVector.y]}
 								onValueChange={([value]) => handleTargetChange("y", value)}

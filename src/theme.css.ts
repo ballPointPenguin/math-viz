@@ -48,7 +48,7 @@ export const [theme, vars] = createTheme({
 		textMuted: grayDark.gray11,
 
 		// Panel backgrounds
-		panelTranslucent: mauveDarkA.mauveA1, // Using mauve-a1 instead of mauve-a2 for translucent panels
+		panelTranslucent: mauveDarkA.mauveA5,
 
 		// Primary (Vaporwave)
 		primary: purpleDark.purple9,

@@ -253,6 +253,9 @@ export const VectorBasis = () => {
 											∀: "For all" or "for every"
 										</Text>
 										<Text as="p" mb="2">
+											∃: "There exists" or "there is"
+										</Text>
+										<Text as="p" mb="2">
 											&#123;&#125;: Set notation, defining a collection of
 											elements
 										</Text>
