@@ -166,8 +166,8 @@ export const linkHoverTransformDesktop = style({
 });
 
 export const activeLink = style({
-	backgroundColor: `${vars.colors.gray5} !important`,
-	color: `${vars.colors.plum9} !important`,
+	backgroundColor: `${vars.colors.gray5}`,
+	color: `${vars.colors.plum9}`,
 	fontWeight: "500",
 	selectors: {
 		[`&.${link}`]: {},

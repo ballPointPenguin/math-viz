@@ -2,6 +2,7 @@ import { ReactP5Wrapper } from "@p5-wrapper/react";
 import { MinusIcon, PlusIcon, ResetIcon } from "@radix-ui/react-icons";
 import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import React, { useRef } from "react";
+import * as styles from "./CoordinateGrid.css";
 
 // Customizable grid component with dark academia + vaporwave aesthetic
 export const CoordinateGrid = ({
@@ -215,18 +216,9 @@ export const CoordinateGrid = ({
 	};
 
 	return (
-		<Box
-			style={{
-				width: fullWidth ? "100%" : width,
-				background: "rgba(0, 0, 0, 0.2)",
-				borderRadius: "8px",
-				boxShadow: "0 4px 30px rgba(135, 94, 255, 0.15)",
-				border: "1px solid rgba(255, 255, 255, 0.1)",
-				backdropFilter: "blur(10px)",
-			}}
-		>
+		<Box className={styles.wrapper} width={fullWidth ? "100%" : width}>
 			{/* Canvas container */}
-			<Box style={{ width: width, height: height, overflow: "hidden" }}>
+			<Box className={styles.canvasContainer} width={width} height={height}>
 				<ReactP5Wrapper sketch={sketch} />
 			</Box>
 
@@ -235,29 +227,26 @@ export const CoordinateGrid = ({
 					justify="between"
 					align="center"
 					p="2"
-					style={{
-						background: "rgba(18, 18, 18, 0.8)",
-						borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-						width: fullWidth ? "100%" : width,
-					}}
+					className={styles.controls}
+					width={fullWidth ? "100%" : width}
 				>
 					<Flex align="center" gap="2">
 						<Button
 							variant="ghost"
 							onClick={zoomOut}
-							style={{ color: "rgba(255, 255, 255, 0.7)" }}
+							className={styles.controlContent}
 						>
 							<MinusIcon />
 						</Button>
 
-						<Text size="1" style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+						<Text size="1" className={styles.controlContent}>
 							Zoom: {Math.round(zoomRef.current * 100)}%
 						</Text>
 
 						<Button
 							variant="ghost"
 							onClick={zoomIn}
-							style={{ color: "rgba(255, 255, 255, 0.7)" }}
+							className={styles.controlContent}
 						>
 							<PlusIcon />
 						</Button>
@@ -266,10 +255,10 @@ export const CoordinateGrid = ({
 					<Button
 						variant="ghost"
 						onClick={resetView}
-						style={{ color: "rgba(255, 255, 255, 0.7)" }}
+						className={styles.controlContent}
 					>
 						<ResetIcon />
-						<Text size="1" ml="1">
+						<Text size="1" ml="1" className={styles.controlContent}>
 							Reset View
 						</Text>
 					</Button>

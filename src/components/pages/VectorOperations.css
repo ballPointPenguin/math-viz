@@ -9,14 +9,14 @@
 
 /* Target the p5 wrapper */
 .p5-wrapper-react {
-  width: 600px !important;
-  height: 500px !important;
+  width: 600px;
+  height: 500px;
 }
 
 /* Target the canvas directly */
 .p5Canvas {
-  width: 600px !important;
-  height: 500px !important;
+  width: 600px;
+  height: 500px;
 }
 
 .controls {

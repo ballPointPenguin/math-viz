@@ -50,8 +50,8 @@ const MathVizDemo = () => {
 								</Heading>
 								<Text mb="3">
 									An interactive coordinate plane with panning and zooming
-									capabilities. Click and drag to pan, use the mouse wheel to
-									zoom, or use the controls below.
+									capabilities. Click and drag to pan, use the controls below to
+									zoom.
 								</Text>
 
 								<CoordinateGrid
