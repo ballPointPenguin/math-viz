@@ -1,5 +1,5 @@
 import { Box, Heading, Text } from "@radix-ui/themes";
-import * as styles from "./feature-card.css";
+import * as styles from "./FeatureCard.css";
 
 // Feature card component refactored to use vanilla-extract styles + Radix props
 export default function FeatureCard({

@@ -2,9 +2,9 @@ import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Box, IconButton } from "@radix-ui/themes";
 import clsx from "clsx";
 import React, { useState } from "react";
+import * as styles from "./Layout.css";
 import { DecorativeGrid } from "./components/ui/Decorative.jsx";
 import Sidebar from "./components/ui/Sidebar.jsx";
-import * as styles from "./layout.css";
 
 export default function Layout({ children }) {
 	const [isSidebarVisible, setIsSidebarVisible] = useState(false);

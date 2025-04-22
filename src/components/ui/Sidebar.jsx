@@ -4,7 +4,7 @@ import { Box, Heading, Text } from "@radix-ui/themes";
 import { clsx } from "clsx";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-import * as styles from "./sidebar.css";
+import * as styles from "./Sidebar.css";
 
 // Navigation structure data to make the code more DRY
 const navigationData = [

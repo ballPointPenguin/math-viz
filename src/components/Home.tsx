@@ -1,7 +1,7 @@
 import { LightningBoltIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { Box, Grid, Heading, Text } from "@radix-ui/themes";
 import React from "react";
-import * as styles from "./home.css";
+import * as styles from "./Home.css";
 import FeatureCard from "./ui/FeatureCard";
 
 // Define local SVG icons (Consider extracting to separate files later)
