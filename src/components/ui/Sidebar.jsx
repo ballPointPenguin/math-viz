@@ -29,6 +29,7 @@ const navigationData = [
 			{ to: "/vector-operations", label: "Vector Operations" },
 			{ to: "/vector-dot-product", label: "Vector Dot Product" },
 			{ to: "/vector-basis", label: "Vector Basis" },
+			{ to: "/matrix-transform", label: "Matrix Transform" },
 		],
 	},
 	{

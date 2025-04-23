@@ -15,6 +15,7 @@ import { UnitCircle } from "./components/pages/UnitCircle.jsx";
 import { VectorAddition } from "./components/pages/VectorAddition.jsx";
 import { VectorBasis } from "./components/pages/VectorBasis.jsx";
 import { VectorDotProduct } from "./components/pages/VectorDotProduct.jsx";
+import { VectorMatrixTransform } from "./components/pages/VectorMatrixTransform.jsx";
 import { VectorOperations } from "./components/pages/VectorOperations.jsx";
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
 					<Route path="vector-operations" element={<VectorOperations />} />
 					<Route path="vector-dot-product" element={<VectorDotProduct />} />
 					<Route path="vector-basis" element={<VectorBasis />} />
+					<Route path="matrix-transform" element={<VectorMatrixTransform />} />
 					{/* Demos & Utilities */}
 					<Route path="p5-demo" element={<P5Demo />} />
 					<Route path="mafs-hello" element={<MafsHello />} />
