@@ -34,3 +34,22 @@ export function getQuadrant([x, y]) {
 	if (y === 0 && x < 0) return "Negative x-axis";
 	return "Origin";
 }
+
+export function crossProduct([x1, y1], [x2, y2]) {
+	// In 2D, cross product returns scalar magnitude of the z-component
+	return x1 * y2 - y1 * x2;
+}
+
+export function scalarProjection([x1, y1], [x2, y2]) {
+	// Scalar projection of vector A onto vector B: (A · B) / |B|
+	const dot = dotProduct([x1, y1], [x2, y2]);
+	const magB = magnitude([x2, y2]);
+	return dot / magB;
+}
+
+export function vectorProjection([x1, y1], [x2, y2]) {
+	// Vector projection of A onto B: (A · B / (B · B)) * B
+	const dot = dotProduct([x1, y1], [x2, y2]);
+	const magBSq = x2 * x2 + y2 * y2;
+	return [(x2 * dot) / magBSq, (y2 * dot) / magBSq];
+}

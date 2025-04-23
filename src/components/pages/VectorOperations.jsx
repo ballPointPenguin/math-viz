@@ -1,7 +1,16 @@
 import { ReactP5Wrapper } from "@p5-wrapper/react";
-import { useEffect, useState } from "react";
+import { Box, Flex, Heading, Text } from "@radix-ui/themes";
+import React, { useState } from "react";
+import {
+	angleBetween,
+	crossProduct,
+	dotProduct,
+	magnitude,
+	scalarProjection,
+	vectorProjection,
+} from "../../utils/vectorUtils.js";
 import { BlockMath, InlineMath } from "../KaTeX.jsx";
-import "./VectorOperations.css";
+import * as styles from "./VectorOperations.css.ts";
 
 function sketch(p) {
 	const width = 600;
@@ -150,254 +159,187 @@ function drawProjection(p, vecA, vecB) {
 }
 
 export function VectorOperations() {
-	const [vectorA, setVectorA] = useState({ x: 2, y: 3 });
-	const [vectorB, setVectorB] = useState({ x: 4, y: -1 });
-	const [vectorInfo, setVectorInfo] = useState({
-		magA: 0,
-		magB: 0,
-		dotProduct: 0,
-		crossProduct: 0,
-		angle: 0,
-		scalarProj: 0,
-		vectorProj: { x: 0, y: 0 },
-	});
+	// State as [x, y] arrays to leverage vectorUtils
+	const [vectorA, setVectorA] = useState([2, 3]);
+	const [vectorB, setVectorB] = useState([4, -1]);
 
-	// Update calculations when vectors change
-	useEffect(() => {
-		const magA = Math.sqrt(vectorA.x * vectorA.x + vectorA.y * vectorA.y);
-		const magB = Math.sqrt(vectorB.x * vectorB.x + vectorB.y * vectorB.y);
-		const dotProduct = vectorA.x * vectorB.x + vectorA.y * vectorB.y;
+	// Derived calculations
+	const magA = magnitude(vectorA);
+	const magB = magnitude(vectorB);
+	const dp = dotProduct(vectorA, vectorB);
+	const cp = crossProduct(vectorA, vectorB);
+	const angle = angleBetween(vectorA, vectorB);
+	const scalarProj = scalarProjection(vectorA, vectorB);
+	const [projX, projY] = vectorProjection(vectorA, vectorB);
 
-		// Calculate cross product (for 2D vectors, returns scalar representing z-component)
-		const crossProduct = vectorA.x * vectorB.y - vectorA.y * vectorB.x;
-
-		// Calculate the angle between vectors (in degrees)
-		const cosAngle = dotProduct / (magA * magB);
-		const clampedCosAngle = Math.max(-1, Math.min(1, cosAngle)); // Avoid floating point errors
-		const angle = (Math.acos(clampedCosAngle) * 180) / Math.PI;
-
-		// Calculate projections
-		const scalarProj = dotProduct / magA;
-		const magASq = magA * magA;
-		const vectorProj = {
-			x: (vectorA.x * dotProduct) / magASq,
-			y: (vectorA.y * dotProduct) / magASq,
-		};
-
-		setVectorInfo({
-			magA,
-			magB,
-			dotProduct,
-			crossProduct,
-			angle,
-			scalarProj,
-			vectorProj,
+	// Unified change handler for array-based vectors
+	const handleChange = (setter) => (index, value) => {
+		setter((prev) => {
+			const updated = [...prev];
+			updated[index] = Number(value);
+			return updated;
 		});
-	}, [vectorA, vectorB]);
-
-	// Handler for vector A inputs
-	const handleVectorAChange = (component, value) => {
-		const newValue = Number.parseFloat(value) || 0;
-		setVectorA((prev) => ({
-			...prev,
-			[component]: newValue,
-		}));
-	};
-
-	// Handler for vector B inputs
-	const handleVectorBChange = (component, value) => {
-		const newValue = Number.parseFloat(value) || 0;
-		setVectorB((prev) => ({
-			...prev,
-			[component]: newValue,
-		}));
 	};
 
 	return (
-		<div>
-			<h1>Vector Operations Explorer</h1>
-			<p>
+		<Box className={styles.container}>
+			<Heading size="6" className={styles.headingMargin}>
+				Vector Operations Explorer
+			</Heading>
+			<Text as="p" className={styles.headingMargin}>
 				This interactive tool allows you to explore vector operations like
-				modulus (length) and dot product (inner product).
-			</p>
+				modulus (length), dot product, cross product, and projections.
+			</Text>
 
-			<div className="canvas-container">
-				<ReactP5Wrapper sketch={sketch} vectorA={vectorA} vectorB={vectorB} />
-			</div>
+			<Box className={styles.canvasContainer}>
+				<ReactP5Wrapper
+					sketch={sketch}
+					vectorA={{ x: vectorA[0], y: vectorA[1] }}
+					vectorB={{ x: vectorB[0], y: vectorB[1] }}
+				/>
+			</Box>
 
-			<div className="controls">
-				<div className="control-group">
-					<h2>Vector A</h2>
-					<div className="slider-container">
-						<label htmlFor="vecAx">x:</label>
+			<Box className={styles.controls}>
+				<Box className={styles.controlGroup}>
+					<Text as="h3" size="4" className={styles.headingMargin}>
+						Vector A
+					</Text>
+					<Box className={styles.sliderContainer}>
+						<Text as="label">x:</Text>
 						<input
 							type="range"
-							id="vecAx"
 							min="-5"
 							max="5"
 							step="0.1"
-							value={vectorA.x}
-							onChange={(e) => handleVectorAChange("x", e.target.value)}
+							value={vectorA[0]}
+							onChange={(e) => handleChange(setVectorA)(0, e.target.value)}
 						/>
 						<input
 							type="number"
-							id="vecAxValue"
-							value={vectorA.x}
 							min="-5"
 							max="5"
 							step="0.1"
-							onChange={(e) => handleVectorAChange("x", e.target.value)}
+							value={vectorA[0]}
+							onChange={(e) => handleChange(setVectorA)(0, e.target.value)}
 						/>
-					</div>
-					<div className="slider-container">
-						<label htmlFor="vecAy">y:</label>
+					</Box>
+					<Box className={styles.sliderContainer}>
+						<Text as="label">y:</Text>
 						<input
 							type="range"
-							id="vecAy"
 							min="-5"
 							max="5"
 							step="0.1"
-							value={vectorA.y}
-							onChange={(e) => handleVectorAChange("y", e.target.value)}
+							value={vectorA[1]}
+							onChange={(e) => handleChange(setVectorA)(1, e.target.value)}
 						/>
 						<input
 							type="number"
-							id="vecAyValue"
-							value={vectorA.y}
 							min="-5"
 							max="5"
 							step="0.1"
-							onChange={(e) => handleVectorAChange("y", e.target.value)}
+							value={vectorA[1]}
+							onChange={(e) => handleChange(setVectorA)(1, e.target.value)}
 						/>
-					</div>
-				</div>
+					</Box>
+				</Box>
 
-				<div className="control-group">
-					<h2>Vector B</h2>
-					<div className="slider-container">
-						<label htmlFor="vecBx">x:</label>
+				<Box className={styles.controlGroup}>
+					<Text as="h3" size="4" className={styles.headingMargin}>
+						Vector B
+					</Text>
+					<Box className={styles.sliderContainer}>
+						<Text as="label">x:</Text>
 						<input
 							type="range"
-							id="vecBx"
 							min="-5"
 							max="5"
 							step="0.1"
-							value={vectorB.x}
-							onChange={(e) => handleVectorBChange("x", e.target.value)}
+							value={vectorB[0]}
+							onChange={(e) => handleChange(setVectorB)(0, e.target.value)}
 						/>
 						<input
 							type="number"
-							id="vecBxValue"
-							value={vectorB.x}
 							min="-5"
 							max="5"
 							step="0.1"
-							onChange={(e) => handleVectorBChange("x", e.target.value)}
+							value={vectorB[0]}
+							onChange={(e) => handleChange(setVectorB)(0, e.target.value)}
 						/>
-					</div>
-					<div className="slider-container">
-						<label htmlFor="vecBy">y:</label>
+					</Box>
+					<Box className={styles.sliderContainer}>
+						<Text as="label">y:</Text>
 						<input
 							type="range"
-							id="vecBy"
 							min="-5"
 							max="5"
 							step="0.1"
-							value={vectorB.y}
-							onChange={(e) => handleVectorBChange("y", e.target.value)}
+							value={vectorB[1]}
+							onChange={(e) => handleChange(setVectorB)(1, e.target.value)}
 						/>
 						<input
 							type="number"
-							id="vecByValue"
-							value={vectorB.y}
 							min="-5"
 							max="5"
 							step="0.1"
-							onChange={(e) => handleVectorBChange("y", e.target.value)}
+							value={vectorB[1]}
+							onChange={(e) => handleChange(setVectorB)(1, e.target.value)}
 						/>
-					</div>
-				</div>
+					</Box>
+				</Box>
 
-				<div className="output">
-					<div>
-						<strong>Vector A:</strong> ({vectorA.x.toFixed(1)},{" "}
-						{vectorA.y.toFixed(1)}) | Modulus: |A| ={" "}
-						{vectorInfo.magA.toFixed(2)}
-					</div>
-					<div>
-						<strong>Vector B:</strong> ({vectorB.x.toFixed(1)},{" "}
-						{vectorB.y.toFixed(1)}) | Modulus: |B| ={" "}
-						{vectorInfo.magB.toFixed(2)}
-					</div>
-					<div>
-						<strong>Dot Product:</strong> A · B ={" "}
-						{vectorInfo.dotProduct.toFixed(2)}
-						<br />
-						<strong>Cross Product (z-component):</strong> A × B ={" "}
-						{vectorInfo.crossProduct.toFixed(2)}
-						<br />
-						<strong>Angle between vectors:</strong>{" "}
-						{vectorInfo.angle.toFixed(1)}°
-						{vectorInfo.angle < 90
-							? " (acute)"
-							: vectorInfo.angle > 90
-								? " (obtuse)"
-								: " (right angle)"}
-						<br />
+				<Box className={styles.output}>
+					<Text as="p">
+						<strong>Vector A:</strong> ({vectorA[0].toFixed(1)},{" "}
+						{vectorA[1].toFixed(1)}) | Modulus: {magA.toFixed(2)}
+					</Text>
+					<Text as="p">
+						<strong>Vector B:</strong> ({vectorB[0].toFixed(1)},{" "}
+						{vectorB[1].toFixed(1)}) | Modulus: {magB.toFixed(2)}
+					</Text>
+					<Text as="p">
+						<strong>Dot Product:</strong> {dp.toFixed(2)}
+					</Text>
+					<Text as="p">
+						<strong>Cross Product (z-component):</strong> {cp.toFixed(2)}
+					</Text>
+					<Text as="p">
+						<strong>Angle between:</strong> {angle.toFixed(1)}°
+					</Text>
+					<Text as="p">
 						<strong>Scalar Projection of B onto A:</strong>{" "}
-						{vectorInfo.scalarProj.toFixed(2)}
-						<br />
-						<strong>Vector Projection of B onto A:</strong> (
-						{vectorInfo.vectorProj.x.toFixed(2)},{" "}
-						{vectorInfo.vectorProj.y.toFixed(2)})
-					</div>
-				</div>
-			</div>
+						{scalarProj.toFixed(2)}
+					</Text>
+					<Text as="p">
+						<strong>Vector Projection of B onto A:</strong> ({projX.toFixed(2)},{" "}
+						{projY.toFixed(2)})
+					</Text>
+				</Box>
+			</Box>
 
-			<div className="controls">
-				<h2>Key Formulas</h2>
-				<p>The formulas used in this visualization are:</p>
-				<div className="formula">
-					<strong>Modulus (Length):</strong>{" "}
-					<InlineMath math={"|\\vec{v}| = \\sqrt{x^2 + y^2}"} />
-				</div>
-				<div className="formula">
-					<strong>Dot Product:</strong>{" "}
-					<InlineMath
-						math={"\\vec{A} \\cdot \\vec{B} = A_x \\cdot B_x + A_y \\cdot B_y"}
-					/>
-				</div>
-				<div className="formula">
-					<strong>Cross Product (2D):</strong>{" "}
-					<InlineMath
-						math={"\\vec{A} \\times \\vec{B} = A_x \\cdot B_y - A_y \\cdot B_x"}
-					/>
-				</div>
-				<div className="formula">
-					<strong>Angle between vectors:</strong>{" "}
-					<InlineMath
-						math={
-							"\\cos(\\theta) = \\frac{\\vec{A} \\cdot \\vec{B}}{|\\vec{A}| \\cdot |\\vec{B}|}"
-						}
-					/>
-				</div>
-				<div className="formula">
-					<strong>Scalar Projection:</strong>{" "}
-					<InlineMath
-						math={
-							"\\text{proj}_{\\vec{A}}(\\vec{B}) = \\frac{\\vec{A} \\cdot \\vec{B}}{|\\vec{A}|}"
-						}
-					/>
-				</div>
-				<div className="formula">
-					<strong>Vector Projection:</strong>{" "}
-					<InlineMath
-						math={
-							"\\text{proj}_{\\vec{A}}(\\vec{B}) = \\frac{\\vec{A} \\cdot \\vec{B}}{\\vec{A} \\cdot \\vec{A}} \\cdot \\vec{A}"
-						}
-					/>
-				</div>
-			</div>
-		</div>
+			<Box className={styles.controls}>
+				<Text as="h3" size="4" className={styles.headingMargin}>
+					Key Formulas
+				</Text>
+				<Box className={styles.formula}>
+					<InlineMath math="|\\vec{v}|=\\sqrt{x^2+y^2}" />
+				</Box>
+				<Box className={styles.formula}>
+					<InlineMath math="\\vec{A}\\cdot\\vec{B}=A_xB_x+A_yB_y" />
+				</Box>
+				<Box className={styles.formula}>
+					<InlineMath math="\\vec{A}\\times\\vec{B}=A_xB_y-A_yB_x" />
+				</Box>
+				<Box className={styles.formula}>
+					<InlineMath math="\\theta=\\cos^{-1}\\left(\\frac{\\vec{A}\\cdot\\vec{B}}{|\\vec{A}||\\vec{B}|}\\right)" />
+				</Box>
+				<Box className={styles.formula}>
+					<InlineMath math="\\text{proj}_{A}(B)=(\\vec{A}\\cdot\\vec{B})/|\\vec{A}|" />
+				</Box>
+				<Box className={styles.formula}>
+					<InlineMath math="\\text{projVec}_{A}(B)=(\\frac{\\vec{A}\\cdot\\vec{B}}{\\vec{A}\\cdot\\vec{A}})\\vec{A}" />
+				</Box>
+			</Box>
+		</Box>
 	);
 }
