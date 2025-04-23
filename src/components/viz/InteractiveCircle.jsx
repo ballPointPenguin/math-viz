@@ -10,6 +10,7 @@ import {
 	Text,
 } from "@radix-ui/themes";
 import React, { useEffect, useRef, useState } from "react";
+import * as styles from "./InteractiveCircle.css";
 
 // Customizable interactive circle component with dark academia + vaporwave aesthetic
 export const InteractiveCircle = ({
@@ -19,7 +20,6 @@ export const InteractiveCircle = ({
 	circleColor = "rgba(163, 119, 255, 0.8)",
 	accentColor = "rgba(255, 105, 180, 0.7)",
 	pointColor = "rgba(255, 255, 255, 0.9)",
-	fullWidth = false,
 	initialRadius = 100,
 	minRadius = 20,
 	maxRadius = 150,
@@ -33,17 +33,14 @@ export const InteractiveCircle = ({
 	onPointSelect = null,
 	fixedPoints = [],
 }) => {
-	const canvasRef = useRef(null);
 	const [radius, setRadius] = useState(initialRadius);
 	const [points, setPoints] = useState(fixedPoints);
 	const animationRef = useRef(0);
 
 	const sketch = (p) => {
-		// Setup the canvas
+		// Setup the canvas and interactions
 		p.setup = () => {
 			const canvas = p.createCanvas(width, height);
-			canvas.parent(canvasRef.current);
-
 			if (interactive) {
 				canvas.mouseClicked(() => {
 					// Check if click is within canvas bounds
@@ -57,38 +54,29 @@ export const InteractiveCircle = ({
 						const centerX = width / 2;
 						const centerY = height / 2;
 						const x = p.mouseX - centerX;
-						const y = centerY - p.mouseY; // Invert y to match mathematical convention
+						const y = -(p.mouseY - centerY); // Invert y-coordinate to match mathematical coordinates
 
 						// Calculate distance from center
 						const distance = p.sqrt(x * x + y * y);
 
 						// Check if click is near the circle
-						const onCircle = p.abs(distance - radius) < 10;
-
+						const onCircle = p.abs(distance - radius) < radius;
+						console.log({ distance, radius, onCircle });
 						if (onCircle) {
-							// Calculate angle
 							const angle = p.atan2(y, x);
-
-							// Add point to state
 							const newPoint = {
 								angle,
 								x: p.cos(angle) * radius,
 								y: p.sin(angle) * radius,
 							};
-
 							setPoints((prev) => [...prev, newPoint]);
-
-							// Call point select callback if provided
-							if (onPointSelect) {
-								onPointSelect(newPoint);
-							}
+							if (onPointSelect) onPointSelect(newPoint);
 						}
 					}
 				});
 			}
 		};
-
-		// Draw the canvas
+		// Draw the canvas each frame
 		p.draw = () => {
 			p.background(backgroundColor);
 
@@ -208,7 +196,7 @@ export const InteractiveCircle = ({
 					{ angle: (11 * Math.PI) / 6, label: "11π/6" },
 				];
 
-				markers.forEach((marker) => {
+				for (const marker of markers) {
 					// Draw reference lines
 					const markerX = centerX + p.cos(marker.angle) * radius;
 					const markerY = centerY - p.sin(marker.angle) * radius;
@@ -232,7 +220,7 @@ export const InteractiveCircle = ({
 					p.noStroke();
 					p.textSize(10);
 					p.text(marker.label, labelX - 10, labelY + 5);
-				});
+				}
 			}
 		};
 	};
@@ -241,8 +229,6 @@ export const InteractiveCircle = ({
 	useEffect(() => {
 		// Scale points when radius changes
 		if (points.length > 0) {
-			const scaleFactor = radius / initialRadius;
-
 			setPoints((prev) =>
 				prev.map((point) => ({
 					angle: point.angle,
@@ -251,7 +237,7 @@ export const InteractiveCircle = ({
 				})),
 			);
 		}
-	}, [radius, initialRadius]);
+	}, [radius, points.length]);
 
 	// Handle removing a point
 	const removePoint = (index) => {
@@ -264,40 +250,20 @@ export const InteractiveCircle = ({
 	};
 
 	return (
-		<Box
-			style={{
-				width: fullWidth ? "100%" : width,
-				background: "rgba(0, 0, 0, 0.2)",
-				borderRadius: "8px",
-				overflow: "hidden",
-				boxShadow: "0 4px 30px rgba(135, 94, 255, 0.15)",
-				border: "1px solid rgba(255, 255, 255, 0.1)",
-				backdropFilter: "blur(10px)",
-			}}
-		>
-			<div
-				ref={canvasRef}
-				style={{
-					width: "100%",
-					height,
-				}}
-			/>
+		<Box className={styles.wrapper} width={`${width}px`} mx="auto">
+			<Flex className={styles.canvasContainer} align="center" justify="center">
+				<ReactP5Wrapper sketch={sketch} />
+			</Flex>
 
 			{showControls && (
-				<Box
-					p="3"
-					style={{
-						background: "rgba(18, 18, 18, 0.8)",
-						borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-					}}
-				>
+				<Box p="3" className={styles.controls} width={`${width}px`}>
 					<Flex direction="column" gap="3">
-						<Flex align="center" justify="between">
-							<Text size="2" style={{ color: "rgba(255, 255, 255, 0.8)" }}>
+						<Flex align="center" justify="between" width="100%">
+							<Text size="2" className={styles.controlContent}>
 								Circle Radius
 							</Text>
-							<Flex align="center" gap="2">
-								<Text size="1" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
+							<Flex align="center" gap="2" width="100%">
+								<Text size="1" className={styles.controlSubContent}>
 									{radius}px
 								</Text>
 								<Slider
@@ -306,7 +272,7 @@ export const InteractiveCircle = ({
 									max={maxRadius}
 									step={1}
 									onValueChange={(value) => setRadius(value[0])}
-									style={{ width: "180px" }}
+									className={styles.slider}
 								/>
 							</Flex>
 						</Flex>
@@ -314,20 +280,20 @@ export const InteractiveCircle = ({
 						{points.length > 0 && (
 							<Box>
 								<Flex justify="between" align="center" mb="2">
-									<Text size="2" style={{ color: "rgba(255, 255, 255, 0.8)" }}>
+									<Text size="2" className={styles.controlContent}>
 										Points
 									</Text>
 									<Button
 										variant="ghost"
 										onClick={clearPoints}
-										style={{ color: "rgba(255, 105, 180, 0.8)" }}
+										style={{ color: accentColor }}
 									>
 										Clear All
 									</Button>
 								</Flex>
 
-								<Box style={{ maxHeight: "100px", overflowY: "auto" }}>
-									{points.map((point, index) => {
+								<Box className={styles.pointsList}>
+									{points.map((point, idx) => {
 										const angleDeg = Math.round((point.angle * 180) / Math.PI);
 										const normalizedX =
 											Math.round((point.x / radius) * 100) / 100;
@@ -335,18 +301,20 @@ export const InteractiveCircle = ({
 											Math.round((point.y / radius) * 100) / 100;
 
 										return (
-											<Flex key={index} justify="between" align="center" py="1">
-												<Text
-													size="1"
-													style={{ color: "rgba(255, 255, 255, 0.8)" }}
-												>
-													P{index + 1}: {angleDeg}° ({normalizedX},{" "}
-													{normalizedY})
+											<Flex
+												key={`${angleDeg}-${normalizedX}-${normalizedY}`}
+												justify="between"
+												align="center"
+												py="1"
+											>
+												<Text size="1" className={styles.controlContent}>
+													P{idx + 1}: {angleDeg}° ({normalizedX}, {normalizedY})
 												</Text>
 												<Button
 													variant="ghost"
 													size="1"
-													onClick={() => removePoint(index)}
+													onClick={() => removePoint(idx)}
+													className={styles.controlContent}
 												>
 													<Cross2Icon />
 												</Button>

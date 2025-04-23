@@ -30,7 +30,6 @@ export const CoordinateGrid = ({
 	const lastMousePosRef = useRef({ x: 0, y: 0 });
 
 	const sketch = (p) => {
-		console.log("sketch", { width, height });
 		// Setup the canvas
 		p.setup = () => {
 			const canvas = p.createCanvas(width, height);
@@ -216,9 +215,17 @@ export const CoordinateGrid = ({
 	};
 
 	return (
-		<Box className={styles.wrapper} width={fullWidth ? "100%" : width}>
+		<Box
+			className={styles.wrapper}
+			width={fullWidth ? "100%" : `${width}px`}
+			mx="auto"
+		>
 			{/* Canvas container */}
-			<Box className={styles.canvasContainer} width={width} height={height}>
+			<Box
+				className={styles.canvasContainer}
+				width={fullWidth ? "100%" : `${width}px`}
+				height={`${height}px`}
+			>
 				<ReactP5Wrapper sketch={sketch} />
 			</Box>
 
@@ -228,7 +235,7 @@ export const CoordinateGrid = ({
 					align="center"
 					p="2"
 					className={styles.controls}
-					width={fullWidth ? "100%" : width}
+					width={fullWidth ? "100%" : `${width}px`}
 				>
 					<Flex align="center" gap="2">
 						<Button
