@@ -61,7 +61,6 @@ export const InteractiveCircle = ({
 
 						// Check if click is near the circle
 						const onCircle = p.abs(distance - radius) < radius;
-						console.log({ distance, radius, onCircle });
 						if (onCircle) {
 							const angle = p.atan2(y, x);
 							const newPoint = {

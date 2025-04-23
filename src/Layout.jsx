@@ -10,7 +10,6 @@ export default function Layout({ children }) {
 	const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
 	const toggleSidebar = () => {
-		console.log("toggleSidebar");
 		setIsSidebarVisible(!isSidebarVisible);
 	};
 
