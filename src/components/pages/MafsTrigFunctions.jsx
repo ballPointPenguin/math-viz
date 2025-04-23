@@ -3,15 +3,17 @@ import {
 	Coordinates,
 	Line,
 	Mafs,
+	Text as MafsText,
 	Plot,
 	Point,
-	Text,
 	Theme,
 	useMovablePoint,
 } from "mafs";
-import * as React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "mafs/core.css";
+import { Box, Button, Flex, Heading, Slider, Text } from "@radix-ui/themes";
 import { BlockMath } from "../KaTeX.jsx";
+import * as styles from "./MafsTrigFunctions.css.ts";
 
 // Constants
 const RADIUS = 1;
@@ -19,12 +21,19 @@ const WAVE_START = 0;
 const WAVE_END = 4 * Math.PI;
 
 export function MafsTrigFunctions() {
-	const [theta, setTheta] = React.useState(Math.PI / 4);
-	const [isPaused, setIsPaused] = React.useState(false);
-	const [speed, setSpeed] = React.useState(1);
+	const [theta, setTheta] = useState(Math.PI / 4);
+	const [initialTheta] = useState(theta);
+	const [isPaused, setIsPaused] = useState(false);
+	const [speed, setSpeed] = useState(1);
 
-	// Create a movable point on the unit circle
-	const movablePoint = useMovablePoint([Math.cos(theta), Math.sin(theta)], {
+	// Memoize initial point array to avoid infinite updates
+	const initialPoint = useMemo(
+		() => [Math.cos(initialTheta), Math.sin(initialTheta)],
+		[initialTheta],
+	);
+
+	// Create a movable point on the unit circle (only on mount)
+	const movablePoint = useMovablePoint(initialPoint, {
 		constrain: ([x, y]) => {
 			// Constrain to unit circle
 			const r = Math.sqrt(x * x + y * y);
@@ -38,7 +47,7 @@ export function MafsTrigFunctions() {
 	});
 
 	// Animation effect
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!isPaused) {
 			const id = setInterval(() => {
 				setTheta((t) => (t + 0.01 * speed) % (2 * Math.PI));
@@ -47,10 +56,10 @@ export function MafsTrigFunctions() {
 		}
 	}, [isPaused, speed]);
 
-	// Update movable point position when theta changes
-	React.useEffect(() => {
+	// Update movable point when theta changes
+	useEffect(() => {
 		movablePoint.setPoint([Math.cos(theta), Math.sin(theta)]);
-	}, [theta, movablePoint]);
+	}, [theta, movablePoint.setPoint]);
 
 	// Trig values
 	const x = Math.cos(theta);
@@ -90,57 +99,38 @@ export function MafsTrigFunctions() {
 	const isEven = (value) => value % 2 === 0;
 
 	return (
-		<div style={{ maxWidth: 1000, margin: "0 auto", padding: "20px" }}>
-			<h2>Interactive Unit Circle with Sine, Cosine, and Tangent</h2>
-			<p>
+		<Box className={styles.container}>
+			<Heading as="h2" size="5" className={styles.headingMargin}>
+				Interactive Unit Circle with Sine, Cosine, and Tangent
+			</Heading>
+			<Text as="p" className={styles.headingMargin}>
 				Drag the blue point on the unit circle or use the controls to animate.
 				Watch how the values of sine, cosine, and tangent change as the angle θ
 				varies.
-			</p>
+			</Text>
 
 			{/* Controls */}
-			<div
-				style={{
-					marginBottom: "20px",
-					display: "flex",
-					gap: "20px",
-					alignItems: "center",
-				}}
-			>
-				<button
-					type="button"
-					onClick={() => setIsPaused((p) => !p)}
-					style={{
-						padding: "8px 16px",
-						background: isPaused ? "#4CAF50" : "#f44336",
-						color: "white",
-						border: "none",
-						borderRadius: "4px",
-						cursor: "pointer",
-					}}
-				>
-					{isPaused ? "Play" : "Pause"} Animation
-				</button>
-
-				<div>
-					<label htmlFor="speed">Speed: </label>
-					<input
-						id="speed"
-						type="range"
-						min="0.5"
-						max="3"
-						step="0.5"
-						value={speed}
-						onChange={(e) => setSpeed(Number.parseFloat(e.target.value))}
-						style={{ verticalAlign: "middle" }}
+			<Flex className={styles.controls}>
+				<Button onClick={() => setIsPaused((p) => !p)}>
+					{isPaused ? "Play Animation" : "Pause Animation"}
+				</Button>
+				<Flex align="center" gap="2">
+					<Text as="label">Speed:</Text>
+					<Slider
+						style={{ flexGrow: 1, minWidth: "100px" }}
+						value={[speed]}
+						min={0.5}
+						max={3}
+						step={0.5}
+						onValueChange={([val]) => setSpeed(val)}
 					/>
-					<span> {speed}x</span>
-				</div>
-			</div>
+					<Text>{speed}x</Text>
+				</Flex>
+			</Flex>
 
-			<div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+			<Flex className={styles.canvasRow}>
 				{/* Unit Circle */}
-				<div style={{ minWidth: "400px", flex: "1" }}>
+				<Box style={{ flex: 1, minWidth: "400px" }}>
 					<Mafs height={400} viewBox={{ x: [-1.5, 1.5], y: [-1.5, 1.5] }}>
 						<Coordinates.Cartesian
 							xAxis={{
@@ -217,26 +207,26 @@ export function MafsTrigFunctions() {
 						/>
 
 						{/* Angle label */}
-						<Text
+						<MafsText
 							x={0.3 * Math.cos(theta / 2)}
 							y={0.3 * Math.sin(theta / 2)}
 							size={16}
 						>
 							θ
-						</Text>
+						</MafsText>
 
 						{/* Label cosine */}
-						<Text x={x / 2} y={-0.1} color={Theme.red} size={12}>
+						<MafsText x={x / 2} y={-0.1} color={Theme.red} size={12}>
 							cos(θ)
-						</Text>
+						</MafsText>
 
 						{/* Label sine */}
-						<Text x={-0.2} y={y / 2} color={Theme.green} size={12}>
+						<MafsText x={-0.2} y={y / 2} color={Theme.green} size={12}>
 							sin(θ)
-						</Text>
+						</MafsText>
 
 						{/* Label tangent */}
-						<Text
+						<MafsText
 							x={1.1}
 							y={tanValue / 2}
 							color={Theme.purple}
@@ -244,7 +234,7 @@ export function MafsTrigFunctions() {
 							visible={Math.abs(tanValue) < 5}
 						>
 							tan(θ)
-						</Text>
+						</MafsText>
 
 						{/* Points */}
 						{movablePoint.element}
@@ -257,10 +247,10 @@ export function MafsTrigFunctions() {
 							visible={Math.abs(tanValue) < 10}
 						/>
 					</Mafs>
-				</div>
+				</Box>
 
 				{/* Trig function plots */}
-				<div style={{ minWidth: "400px", flex: "1" }}>
+				<Box style={{ flex: 1, minWidth: "400px" }}>
 					<Mafs
 						height={400}
 						viewBox={{ x: [WAVE_START, WAVE_END], y: [-1.5, 1.5] }}
@@ -307,71 +297,71 @@ export function MafsTrigFunctions() {
 						/>
 
 						{/* Labels */}
-						<Text x={WAVE_END - 1.5} y={0.2} color={Theme.green} size={12}>
+						<MafsText x={WAVE_END - 1.5} y={0.2} color={Theme.green} size={12}>
 							sin(θ)
-						</Text>
-						<Text x={WAVE_END - 1.5} y={-0.2} color={Theme.red} size={12}>
+						</MafsText>
+						<MafsText x={WAVE_END - 1.5} y={-0.2} color={Theme.red} size={12}>
 							cos(θ)
-						</Text>
-						<Text x={WAVE_END - 1.5} y={1} color={Theme.purple} size={12}>
+						</MafsText>
+						<MafsText x={WAVE_END - 1.5} y={1} color={Theme.purple} size={12}>
 							tan(θ)
-						</Text>
+						</MafsText>
 					</Mafs>
-				</div>
-			</div>
+				</Box>
+			</Flex>
 
 			{/* Values Display */}
-			<div
-				style={{
-					marginTop: "30px",
-					padding: "20px",
-					borderRadius: "8px",
-					display: "flex",
-					flexWrap: "wrap",
-					gap: "20px",
-					justifyContent: "space-between",
-				}}
-			>
-				<div>
-					<h3>Angle θ</h3>
-					<p>
+			<Box className={styles.valuesSection}>
+				<Box>
+					<Heading as="h3" size="4" className={styles.headingMargin}>
+						Angle θ
+					</Heading>
+					<Text as="p">
 						<strong>Degrees:</strong> {formatAngle().degrees}
 						<br />
 						<strong>Radians:</strong> {formatAngle().radians}
 						<br />
 						<strong>Quadrant:</strong> {getQuadrant()}
-					</p>
-				</div>
+					</Text>
+				</Box>
 
-				<div>
-					<h3>Trigonometric Values</h3>
-					<p>
-						<span style={{ color: Theme.red }}>cos(θ) = {formatValue(x)}</span>
+				<Box>
+					<Heading as="h3" size="4" className={styles.headingMargin}>
+						Trigonometric Values
+					</Heading>
+					<Text as="p">
+						<Text as="span" style={{ color: Theme.red }}>
+							cos(θ) = {formatValue(x)}
+						</Text>
 						<br />
-						<span style={{ color: Theme.green }}>
+						<Text as="span" style={{ color: Theme.green }}>
 							sin(θ) = {formatValue(y)}
-						</span>
+						</Text>
 						<br />
-						<span style={{ color: Theme.purple }}>
+						<Text as="span" style={{ color: Theme.purple }}>
 							tan(θ) = {formatValue(tanValue)}
-						</span>
-					</p>
-				</div>
+						</Text>
+					</Text>
+				</Box>
 
-				<div>
-					<h3>Identities</h3>
-					<p>
+				<Box>
+					<Heading as="h3" size="4" className={styles.headingMargin}>
+						Identities
+					</Heading>
+					<Text as="p">
 						<span>sin²(θ) + cos²(θ) = {formatValue(x * x + y * y)}</span>
 						<br />
 						<span>tan(θ) = sin(θ) / cos(θ) = {formatValue(y / x)}</span>
-					</p>
-				</div>
-			</div>
+					</Text>
+				</Box>
+			</Box>
 
 			{/* Mathematical expressions with KaTeX */}
-			<div style={{ marginTop: "30px" }}>
-				<h3>Key Trigonometric Formulas</h3>
-				<div style={{ display: "flex", flexWrap: "wrap", gap: "30px" }}>
+			<Box className={styles.formulasSection}>
+				<Heading as="h3" size="4" className={styles.headingMargin}>
+					Key Trigonometric Formulas
+				</Heading>
+				<Flex gap="6" style={{ flexWrap: "wrap" }}>
 					<div>
 						<h4>Pythagorean Identity</h4>
 						<BlockMath math="\\sin^2(\\theta) + \\cos^2(\\theta) = 1" />
@@ -387,8 +377,8 @@ export function MafsTrigFunctions() {
 						<BlockMath math="\\sin(\\theta + 2\\pi) = \\sin(\\theta)" />
 						<BlockMath math="\\cos(\\theta + 2\\pi) = \\cos(\\theta)" />
 					</div>
-				</div>
-			</div>
-		</div>
+				</Flex>
+			</Box>
+		</Box>
 	);
 }
