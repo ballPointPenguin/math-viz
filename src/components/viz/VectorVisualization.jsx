@@ -9,8 +9,8 @@ import {
 	Switch,
 	Text,
 } from "@radix-ui/themes";
-import * as math from "mathjs";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
+import * as styles from "./VectorVisualization.css";
 
 // Vector visualization component with dark academia + vaporwave aesthetic
 export const VectorVisualization = ({
@@ -19,7 +19,6 @@ export const VectorVisualization = ({
 	backgroundColor = "#121212",
 	gridColor = "rgba(163, 119, 255, 0.1)",
 	axisColor = "rgba(255, 255, 255, 0.5)",
-	fullWidth = false,
 	interactive = true,
 	defaultVectors = [],
 	showControls = true,
@@ -39,7 +38,6 @@ export const VectorVisualization = ({
 	],
 	resultColor = "rgba(0, 255, 127, 0.8)", // Result vector color
 }) => {
-	const canvasRef = useRef(null);
 	const [vectors, setVectors] = useState(
 		defaultVectors.length > 0
 			? defaultVectors
@@ -49,7 +47,6 @@ export const VectorVisualization = ({
 				],
 	);
 	const [selectedOperation, setSelectedOperation] = useState(operationMode);
-	const [selectedVector, setSelectedVector] = useState(null);
 	const [draggingVector, setDraggingVector] = useState(null);
 	const [showComponentsState, setShowComponentsState] =
 		useState(showComponents);
@@ -77,10 +74,10 @@ export const VectorVisualization = ({
 					color: resultColor,
 					label: "v₁ - v₂",
 				};
-			case "dot":
+			case "dot": {
 				// Dot product is a scalar, not a vector
 				const dotProduct = v1.x * v2.x + v1.y * v2.y;
-				// We'll return a scaled version of v2 to visualize
+				// Return scaled vector for visualization
 				return {
 					x:
 						((dotProduct / Math.sqrt(v2.x * v2.x + v2.y * v2.y)) * v2.x) /
@@ -92,15 +89,16 @@ export const VectorVisualization = ({
 					label: "v₁ · v₂",
 					value: dotProduct.toFixed(2),
 				};
-			case "cross":
-				// In 2D, cross product yields a vector in z-direction
-				// We're in 2D so we'll just return the magnitude
+			}
+			case "cross": {
+				// In 2D, cross product yields a scalar (z-component magnitude)
 				const crossProduct = v1.x * v2.y - v1.y * v2.x;
 				return {
 					value: crossProduct.toFixed(2),
 					label: "v₁ × v₂",
 					color: resultColor,
 				};
+			}
 			default:
 				return null;
 		}
@@ -110,7 +108,6 @@ export const VectorVisualization = ({
 		// Setup the canvas
 		p.setup = () => {
 			const canvas = p.createCanvas(width, height);
-			canvas.parent(canvasRef.current);
 
 			if (interactive) {
 				canvas.mousePressed(() => {
@@ -126,46 +123,46 @@ export const VectorVisualization = ({
 						const distance = p.dist(mouseX, mouseY, screenX, screenY);
 
 						if (distance < 10) {
-							setSelectedVector(index);
 							setDraggingVector(index);
 						}
 					});
 				});
 
-				canvas.mouseDragged(() => {
-					if (draggingVector !== null) {
-						const centerX = width / 2;
-						const centerY = height / 2;
-
-						// Calculate grid coordinates from mouse position
-						const gridX = (p.mouseX - centerX) / scale;
-						const gridY = (centerY - p.mouseY) / scale;
-
-						// Constrain to max magnitude
-						const magnitude = Math.sqrt(gridX * gridX + gridY * gridY);
-						let newX = gridX;
-						let newY = gridY;
-
-						if (magnitude > maxVectorMagnitude) {
-							newX = (gridX / magnitude) * maxVectorMagnitude;
-							newY = (gridY / magnitude) * maxVectorMagnitude;
-						}
-
-						// Update vector
-						setVectors((prev) => {
-							const updated = [...prev];
-							updated[draggingVector] = {
-								...updated[draggingVector],
-								x: Math.round(newX * 10) / 10, // Round to 1 decimal place
-								y: Math.round(newY * 10) / 10,
-							};
-							return updated;
-						});
-					}
-				});
-
 				canvas.mouseReleased(() => {
 					setDraggingVector(null);
+				});
+			}
+		};
+
+		// Add global mouseDragged handler
+		p.mouseDragged = () => {
+			if (draggingVector !== null) {
+				const centerX = width / 2;
+				const centerY = height / 2;
+
+				// Calculate grid coordinates from mouse position
+				const gridX = (p.mouseX - centerX) / scale;
+				const gridY = (centerY - p.mouseY) / scale;
+
+				// Constrain to max magnitude
+				const magnitude = Math.sqrt(gridX * gridX + gridY * gridY);
+				let newX = gridX;
+				let newY = gridY;
+
+				if (magnitude > maxVectorMagnitude) {
+					newX = (gridX / magnitude) * maxVectorMagnitude;
+					newY = (gridY / magnitude) * maxVectorMagnitude;
+				}
+
+				// Update vector
+				setVectors((prev) => {
+					const updated = [...prev];
+					updated[draggingVector] = {
+						...updated[draggingVector],
+						x: Math.round(newX * 10) / 10, // Round to 1 decimal place
+						y: Math.round(newY * 10) / 10,
+					};
+					return updated;
 				});
 			}
 		};
@@ -244,6 +241,7 @@ export const VectorVisualization = ({
 
 			// Draw vectors
 			const result = calculateResult();
+			const arrowSize = 10;
 
 			// Draw individual vectors
 			vectors.forEach((vector, index) => {
@@ -252,7 +250,7 @@ export const VectorVisualization = ({
 
 				// Draw vector components
 				if (showComponentsState) {
-					p.stroke(p.color(vector.color).setAlpha(100));
+					p.stroke(vector.color);
 					p.strokeWeight(1);
 					p.line(centerX, centerY, endX, centerY); // X component
 					p.line(endX, centerY, endX, endY); // Y component
@@ -275,19 +273,16 @@ export const VectorVisualization = ({
 					}
 				}
 
-				// Draw vector arrow
+				// Draw full vector arrow with arrowhead at tip
+				const arrowAngle = p.atan2(centerY - endY, endX - centerX);
 				p.stroke(vector.color);
 				p.strokeWeight(2);
 				p.line(centerX, centerY, endX, endY);
-
-				// Draw arrowhead
-				const angle = p.atan2(centerY - endY, endX - centerX);
-				const arrowSize = 10;
-
+				// Draw arrowhead at tip
 				p.fill(vector.color);
 				p.push();
 				p.translate(endX, endY);
-				p.rotate(angle);
+				p.rotate(arrowAngle);
 				p.triangle(0, 0, -arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2);
 				p.pop();
 
@@ -297,8 +292,8 @@ export const VectorVisualization = ({
 					p.noStroke();
 					p.textSize(14);
 					const labelOffset = 15;
-					const labelX = endX + labelOffset * p.cos(angle);
-					const labelY = endY - labelOffset * p.sin(angle);
+					const labelX = endX + p.cos(arrowAngle) * labelOffset;
+					const labelY = endY - p.sin(arrowAngle) * labelOffset;
 					p.text(vector.label, labelX, labelY);
 				}
 
@@ -307,7 +302,7 @@ export const VectorVisualization = ({
 					const magnitude = Math.sqrt(
 						vector.x * vector.x + vector.y * vector.y,
 					);
-					let angleDeg = p.degrees(Math.atan2(vector.y, vector.x));
+					let angleDeg = p.degrees(p.atan2(vector.y, vector.x));
 					if (angleDeg < 0) angleDeg += 360;
 
 					p.fill(vector.color);
@@ -330,7 +325,14 @@ export const VectorVisualization = ({
 						p.stroke(vector.color);
 						p.strokeWeight(1);
 						const arcRadius = 20;
-						p.arc(centerX, centerY, arcRadius * 2, arcRadius * 2, 0, angle);
+						p.arc(
+							centerX,
+							centerY,
+							arcRadius * 2,
+							arcRadius * 2,
+							0,
+							arrowAngle,
+						);
 					}
 				}
 			});
@@ -340,7 +342,7 @@ export const VectorVisualization = ({
 				// For dot product, we visualize differently
 				if (selectedOperation === "dot") {
 					// Display dot product value
-					p.fill(resultColor);
+					p.stroke(resultColor);
 					p.noStroke();
 					p.textSize(16);
 					p.text(`${result.label} = ${result.value}`, 10, height - 30);
@@ -367,7 +369,7 @@ export const VectorVisualization = ({
 
 					// Draw translucent components
 					if (showComponentsState) {
-						p.stroke(p.color(result.color).setAlpha(100));
+						p.stroke(result.color);
 						p.strokeWeight(1);
 						p.line(centerX, centerY, endX, centerY); // X component
 						p.line(endX, centerY, endX, endY); // Y component
@@ -398,24 +400,21 @@ export const VectorVisualization = ({
 						const v1EndY = centerY - v1.y * scale;
 
 						// Draw v2 starting from the tip of v1 with visual differentiation
-						p.stroke(p.color(v2.color).setAlpha(120));
+						p.stroke(v2.color);
 						p.strokeWeight(0.5);
 						p.line(v1EndX, v1EndY, endX, endY);
 					}
 
-					// Draw result vector arrow
+					// Draw full result vector with arrowhead
+					const resAngle = p.atan2(centerY - endY, endX - centerX);
 					p.stroke(result.color);
 					p.strokeWeight(3);
 					p.line(centerX, centerY, endX, endY);
-
-					// Draw arrowhead
-					const angle = p.atan2(centerY - endY, endX - centerX);
-					const arrowSize = 12;
-
+					// Arrowhead at tip
 					p.fill(result.color);
 					p.push();
 					p.translate(endX, endY);
-					p.rotate(angle);
+					p.rotate(resAngle);
 					p.triangle(
 						0,
 						0,
@@ -432,8 +431,8 @@ export const VectorVisualization = ({
 						p.noStroke();
 						p.textSize(16);
 						const labelOffset = 20;
-						const labelX = endX + labelOffset * p.cos(angle);
-						const labelY = endY - labelOffset * p.sin(angle);
+						const labelX = endX + labelOffset * p.cos(resAngle);
+						const labelY = endY - labelOffset * p.sin(resAngle);
 						p.text(result.label, labelX, labelY);
 
 						// Show magnitude and angle
@@ -460,7 +459,7 @@ export const VectorVisualization = ({
 				}
 			} else if (showResultVector && result && selectedOperation === "cross") {
 				// For cross product in 2D, just show the scalar value
-				p.fill(resultColor);
+				p.stroke(resultColor);
 				p.noStroke();
 				p.textSize(16);
 				p.text(`${result.label} = ${result.value}`, 10, height - 30);
@@ -527,35 +526,25 @@ export const VectorVisualization = ({
 
 	return (
 		<Box
-			style={{
-				width: fullWidth ? "100%" : width,
-				background: "rgba(0, 0, 0, 0.2)",
-				borderRadius: "8px",
-				overflow: "hidden",
-				boxShadow: "0 4px 30px rgba(135, 94, 255, 0.15)",
-				border: "1px solid rgba(255, 255, 255, 0.1)",
-				backdropFilter: "blur(10px)",
-			}}
+			className={styles.wrapper}
+			width="100%"
+			maxWidth={`${width}px`}
+			mx="auto"
 		>
-			<div
-				ref={canvasRef}
-				style={{
-					width: "100%",
-					height,
-				}}
-			/>
+			<Flex
+				className={styles.canvasContainer}
+				width={`${width}px`}
+				mx="auto"
+				height={`${height}px`}
+			>
+				<ReactP5Wrapper sketch={sketch} />
+			</Flex>
 
 			{showControls && (
-				<Box
-					p="3"
-					style={{
-						background: "rgba(18, 18, 18, 0.8)",
-						borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-					}}
-				>
+				<Box p="3" className={styles.controls}>
 					<Flex direction="column" gap="3">
 						<Flex justify="between" align="center">
-							<Text size="2" style={{ color: "rgba(255, 255, 255, 0.8)" }}>
+							<Text size="2" className={styles.controlContent}>
 								Operation
 							</Text>
 							<Select.Root
@@ -578,175 +567,138 @@ export const VectorVisualization = ({
 						</Flex>
 
 						<Flex justify="between" align="center">
-							<Flex gap="3">
-								<Flex align="center" gap="2">
-									<Switch
-										checked={showComponentsState}
-										onCheckedChange={setShowComponentsState}
-									/>
-									<Text size="1" style={{ color: "rgba(255, 255, 255, 0.8)" }}>
-										Components
-									</Text>
-								</Flex>
-
-								<Flex align="center" gap="2">
-									<Switch
-										checked={showAnglesState}
-										onCheckedChange={setShowAnglesState}
-									/>
-									<Text size="1" style={{ color: "rgba(255, 255, 255, 0.8)" }}>
-										Angles
-									</Text>
-								</Flex>
+							<Flex align="center" gap="2">
+								<Switch
+									checked={showComponentsState}
+									onCheckedChange={setShowComponentsState}
+								/>
+								<Text size="1" className={styles.controlSubContent}>
+									Components
+								</Text>
 							</Flex>
-
-							{vectors.length < vectorColors.length && (
-								<Button
-									variant="ghost"
-									onClick={addVector}
-									style={{ color: "rgba(255, 255, 255, 0.8)" }}
-								>
-									<PlusIcon />
-									<Text ml="1" size="1">
-										Add Vector
-									</Text>
-								</Button>
-							)}
+							<Flex align="center" gap="2">
+								<Switch
+									checked={showAnglesState}
+									onCheckedChange={setShowAnglesState}
+								/>
+								<Text size="1" className={styles.controlSubContent}>
+									Angles
+								</Text>
+							</Flex>
 						</Flex>
 
-						<Box>
-							<Text
-								size="2"
-								mb="2"
-								style={{ color: "rgba(255, 255, 255, 0.8)" }}
+						{vectors.length < vectorColors.length && (
+							<Button
+								variant="ghost"
+								onClick={addVector}
+								className={styles.controlContent}
 							>
-								Vectors
-							</Text>
+								<PlusIcon />
+								<Text ml="1" size="1">
+									Add Vector
+								</Text>
+							</Button>
+						)}
+					</Flex>
 
-							{vectors.map((vector, index) => (
-								<Flex key={index} align="center" justify="between" mb="2">
-									<Flex align="center" gap="2">
-										<Box
-											style={{
-												width: "12px",
-												height: "12px",
-												backgroundColor: vector.color,
-												borderRadius: "50%",
-											}}
-										/>
-										<Text size="2" style={{ color: vector.color }}>
-											{vector.label}
-										</Text>
-									</Flex>
-
-									<Flex align="center" gap="3">
-										<Flex align="center" gap="1">
-											<Text
-												size="1"
-												style={{ color: "rgba(255, 255, 255, 0.6)" }}
-											>
-												x:
-											</Text>
-											<Slider
-												value={[vector.x]}
-												min={-maxVectorMagnitude}
-												max={maxVectorMagnitude}
-												step={0.1}
-												onValueChange={(value) =>
-													updateVector(index, "x", value[0])
-												}
-												style={{ width: "80px" }}
-											/>
-											<Text
-												size="1"
-												style={{
-													color: "rgba(255, 255, 255, 0.6)",
-													width: "30px",
-												}}
-											>
-												{vector.x.toFixed(1)}
-											</Text>
-										</Flex>
-
-										<Flex align="center" gap="1">
-											<Text
-												size="1"
-												style={{ color: "rgba(255, 255, 255, 0.6)" }}
-											>
-												y:
-											</Text>
-											<Slider
-												value={[vector.y]}
-												min={-maxVectorMagnitude}
-												max={maxVectorMagnitude}
-												step={0.1}
-												onValueChange={(value) =>
-													updateVector(index, "y", value[0])
-												}
-												style={{ width: "80px" }}
-											/>
-											<Text
-												size="1"
-												style={{
-													color: "rgba(255, 255, 255, 0.6)",
-													width: "30px",
-												}}
-											>
-												{vector.y.toFixed(1)}
-											</Text>
-										</Flex>
-
-										{vectors.length > 2 && (
-											<Button
-												variant="ghost"
-												size="1"
-												onClick={() => removeVector(index)}
-												style={{ color: "rgba(255, 105, 180, 0.8)" }}
-											>
-												<Cross2Icon />
-											</Button>
-										)}
-									</Flex>
+					<Box>
+						<Text size="2" className={styles.controlContent}>
+							Vectors
+						</Text>
+						{vectors.map((vector, index) => (
+							<Flex
+								key={vector.label}
+								align="center"
+								justify="start"
+								gap="6"
+								py="1"
+							>
+								<Flex align="center" gap="2">
+									<Box
+										className={styles.colorBox}
+										style={{ "--bg": vector.color }}
+									/>
+									<Text
+										size="2"
+										className={styles.vectorLabel}
+										style={{ "--fg": vector.color }}
+									>
+										{vector.label}
+									</Text>
 								</Flex>
-							))}
 
-							{result && (
-								<Flex
-									align="center"
-									mt="3"
-									style={{
-										borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-										paddingTop: "10px",
-									}}
-								>
+								<Flex align="center" gap="4">
 									<Flex align="center" gap="2">
-										<Box
-											style={{
-												width: "12px",
-												height: "12px",
-												backgroundColor: resultColor,
-												borderRadius: "50%",
-											}}
+										<Text size="1" className={styles.controlSubContent}>
+											x:
+										</Text>
+										<Slider
+											value={[vector.x]}
+											min={-maxVectorMagnitude}
+											max={maxVectorMagnitude}
+											step={0.1}
+											onValueChange={(value) =>
+												updateVector(index, "x", value[0])
+											}
+											className={styles.slider}
 										/>
-										<Text size="2" style={{ color: resultColor }}>
-											{result.label} ={" "}
+										<Text size="1" className={styles.controlSubContent}>
+											{vector.x.toFixed(1)}
 										</Text>
 									</Flex>
-
-									{selectedOperation === "dot" ||
-									selectedOperation === "cross" ? (
-										<Text size="2" ml="1" style={{ color: resultColor }}>
-											{result.value}
+									<Flex align="center" gap="2">
+										<Text size="1" className={styles.controlSubContent}>
+											y:
 										</Text>
-									) : (
-										<Text size="2" ml="1" style={{ color: resultColor }}>
-											({result.x.toFixed(1)}, {result.y.toFixed(1)})
+										<Slider
+											value={[vector.y]}
+											min={-maxVectorMagnitude}
+											max={maxVectorMagnitude}
+											step={0.1}
+											onValueChange={(value) =>
+												updateVector(index, "y", value[0])
+											}
+											className={styles.slider}
+										/>
+										<Text size="1" className={styles.controlSubContent}>
+											{vector.y.toFixed(1)}
 										</Text>
+									</Flex>
+									{vectors.length > 2 && (
+										<Button
+											variant="ghost"
+											size="1"
+											onClick={() => removeVector(index)}
+											className={styles.controlContent}
+										>
+											<Cross2Icon />
+										</Button>
 									)}
 								</Flex>
-							)}
-						</Box>
-					</Flex>
+							</Flex>
+						))}
+						{result && (
+							<Flex align="center" className={styles.resultContainer}>
+								<Box
+									className={styles.colorBox}
+									style={{ "--bg": resultColor }}
+								/>
+								<Text size="2" className={styles.controlContent}>
+									{result.label} ={" "}
+								</Text>
+								{selectedOperation === "dot" ||
+								selectedOperation === "cross" ? (
+									<Text size="2" ml="1" className={styles.controlContent}>
+										{result.value}
+									</Text>
+								) : (
+									<Text size="2" ml="1" className={styles.controlContent}>
+										({result.x.toFixed(1)}, {result.y.toFixed(1)})
+									</Text>
+								)}
+							</Flex>
+						)}
+					</Box>
 				</Box>
 			)}
 		</Box>
