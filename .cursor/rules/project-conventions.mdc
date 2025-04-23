@@ -1,0 +1,55 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Project Conventions
+
+These guidelines summarize core tools, styling patterns, folder organization, and development workflow in **math-viz**.
+
+_Source: [README.md](mdc:README.md)_
+
+## Tools & Libraries
+
+- **p5.js** (`@p5-wrapper/react`) for creative coding sketches.
+- **Mafs** for declarative coordinate-system graphs.
+- **mathjs** for runtime math expression parsing and evaluation.
+- **KaTeX** for high-performance LaTeX rendering.
+- **Radix UI Themes** for accessible, token-based styling primitives.
+- **Vanilla Extract (VE)** for utility CSS (`sprinkles`), custom variants, and theme contracts.
+
+See full list in [docs/tools.md](mdc:docs/tools.md).
+
+## Styling & Code Patterns
+
+1. **Radix Theme Props**: Default for layout, spacing, typography, colors, and radii on Radix components.
+2. **VE `.css.ts` Files**: For complex selectors, keyframes, or reusable style variants.
+3. **Sprinkles**: Utility-driven composition of design tokens (`sprinkles.css.ts`).
+4. **Global CSS**: External imports and minimal resets (`index.css`, `App.css`).
+
+Refer to [docs/code-patterns.md](mdc:docs/code-patterns.md) for details.
+
+## File & Folder Structure
+
+```plaintext
+src/
+  assets/           # Static images, media, and other assets
+  components/       # Reusable React components
+  utils/            # Helper functions and utilities
+
+  main.jsx          # Application entry point (mounts React)
+  App.jsx & App.css # Top-level App component and global styles
+  Layout.jsx & Layout.css.ts  # Default layout component and VE styles
+  theme.css.ts      # VE theme contract and global style definitions
+  sprinkles.css.ts  # VE sprinkles utilities
+  index.css         # Global CSS imports and minimal resets
+```
+
+## Development Workflow
+
+1. Install dependencies: `npm install`  
+2. Start dev server: `npm run dev` (visit `http://localhost:5173`).  
+3. Lint code: `npm run lint`.  
+4. Follow greenfield guidelines—iterate rapidly and refactor boldly.
+
+For more details on styling and patterns, consult [README.md](mdc:README.md) and documentation in `docs/`.

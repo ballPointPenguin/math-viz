@@ -4,9 +4,7 @@
 
 - [Mafs](https://mafs.dev/guides/get-started/installation)
 - [p5.js](https://p5js.org/reference/)
-- [d3.js](https://d3js.org/api)
 - [mathjs](https://mathjs.org/docs/index.html)
-- [motion](https://motion.dev/docs)
 - [KaTeX](https://katex.org/docs/node)
 
 ## JS Libraries
