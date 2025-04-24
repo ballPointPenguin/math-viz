@@ -20,3 +20,9 @@ export const introText = style([
 		maxWidth: "800px",
 	},
 ]);
+
+export const sectionHeading = style({
+	borderBottom: "1px solid var(--accent-5)",
+	paddingBottom: "8px",
+	color: "var(--violet-11)",
+});

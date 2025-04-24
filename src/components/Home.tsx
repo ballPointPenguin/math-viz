@@ -1,4 +1,8 @@
-import { LightningBoltIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import {
+	FrameIcon,
+	LightningBoltIcon,
+	PlusCircledIcon,
+} from "@radix-ui/react-icons";
 import { Box, Grid, Heading, Text } from "@radix-ui/themes";
 import React from "react";
 import * as styles from "./Home.css";
@@ -89,7 +93,7 @@ export default function Home() {
 
 				<FeatureCard
 					title="Linear Algebra"
-					description="Understand vectors, operations, and dot products through visualization."
+					description="Understand vectors, matrices, determinants, and transformations through visualization."
 					icon={<VectorIcon />}
 					linkPath="/vector-addition"
 				/>
@@ -106,6 +110,25 @@ export default function Home() {
 					description="Explore our collection of visualization components for math education."
 					icon={<PlusCircledIcon />}
 					linkPath="/math-viz-demo"
+				/>
+			</Grid>
+
+			{/* Featured Learning Cards */}
+			<Heading as="h2" size="6" mt="7" mb="4" className={styles.sectionHeading}>
+				Featured Learning Tools
+			</Heading>
+
+			<Grid
+				columns={{ initial: "1", sm: "2", md: "3" }}
+				gap="4"
+				width="100%"
+				mt="3"
+			>
+				<FeatureCard
+					title="Matrix Determinant & Area"
+					description="See how the determinant of a 2×2 matrix relates to the area of a parallelogram."
+					icon={<FrameIcon />}
+					linkPath="/matrix-determinant-area"
 				/>
 			</Grid>
 		</Box>
